@@ -1,2 +1,8 @@
 ﻿  PwnAdventure3Ex.cpp
-  PwnAdventure3Ex.vcxproj -> E:\Pwn Adventure 3 Trainer\PwnAdventure3Ex\Debug\PwnAdventure3Ex.exe
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(34,21): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(34,21): warning C4309: 'initializing': truncation of constant value
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(34,27): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(34,27): warning C4309: 'initializing': truncation of constant value
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(35,25): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\PwnAdventure3Ex.cpp(35,25): warning C4309: 'initializing': truncation of constant value
+  PwnAdventure3Ex.vcxproj -> C:\Users\t_bal\Documents\GitHub\Pwn-Adventure-3-Trainer\PwnAdventure3Ex\Debug\PwnAdventure3Ex.exe
