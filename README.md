@@ -1,6 +1,6 @@
 11/11/2019
 Updated and added an internal version of our trainer.  This is an injectable dll that implements the following cheats. 
-The compiled dll can be found in /releases folder, or the solution can be built in Visual Studio.
+The compiled dll can be found in /Release folder, or the solution can be built in Visual Studio.
 
 
 
