@@ -1,0 +1,9 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (SkyrimOverlay.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  DirectX.cpp
+C:\Users\t_bal\Documents\SkyrimButWithPonies\SKYRIM_OVERLAY\SkyrimOverlay\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+C:\Users\t_bal\Documents\SkyrimButWithPonies\SKYRIM_OVERLAY\SkyrimOverlay\DirectX.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+C:\Users\t_bal\Documents\SkyrimButWithPonies\SKYRIM_OVERLAY\SkyrimOverlay\DirectX.cpp(156,1): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_wstdio.h(1822): message : see declaration of 'swprintf'
+C:\Users\t_bal\Documents\SkyrimButWithPonies\SKYRIM_OVERLAY\SkyrimOverlay\DirectX.cpp(157,1): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_wstdio.h(1822): message : see declaration of 'swprintf'
+  SkyrimOverlay.vcxproj -> C:\Users\t_bal\Documents\SkyrimButWithPonies\SKYRIM_OVERLAY\Debug\PonyOverlay.dll
