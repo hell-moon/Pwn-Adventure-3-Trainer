@@ -13,7 +13,7 @@ using std::vector;
 typedef void(__thiscall* _Chat)(void* playervftblptr, const char* text);
 _Chat Chat;
 
-typedef void*(__thiscall* _GetItemByName)(void* gamePtr, const char* name);
+typedef void* (__thiscall* _GetItemByName)(void* gamePtr, const char* name);
 _GetItemByName GetItemByName;
 
 typedef bool(__thiscall* _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
@@ -42,8 +42,8 @@ DWORD WINAPI HackThread(HMODULE hModule)
 	freopen_s(&fConsole, "CONOUT$", "w", stdout);
 
 	uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle(L"GameLogic.dll");
-	uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;			
-	
+	uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
+
 	uintptr_t addItemFuncOff = 0x51BA0;
 	uintptr_t getItemByNameFuncOff = 0x1DE20;
 	uintptr_t chatFuncOff = 0x551A0;
@@ -145,7 +145,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
 			void* pRemoteExploit = GetItemByName(pGame, sRemoteExploit);
 			cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
 			AddItem(pPlayervftable, pRemoteExploit, 1, 0);
-			
+
 			void* pHeapSpray = GetItemByName(pGame, sHeapSpray);
 			cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
 			AddItem(pPlayervftable, pHeapSpray, 1, 0);
@@ -186,20 +186,18 @@ DWORD WINAPI HackThread(HMODULE hModule)
 			cout << playerInterfacePtr << " address: " << std::hex << playerInterfacePtr << endl;
 
 			GiveAll(pGame, playerInterfacePtr);*/
-			Teleport(pPlayervftable, "PirateBay");
-
+			Teleport(pPlayervftable, "TailMountains");
+			cout << "GiveAll Activated" << endl;
+			GiveAll(pGame, pPlayervftable);
 		}
-		//if (GetAsyncKeyState(VK_NUMPAD3) & 1)
-		//{
-		//	void* pGoldMaster = NULL;
-		//	pGoldMaster = GetItemByName(pGame, GoldMaster);
-		//	cout << GoldMaster << " address: " << std::hex << pGoldMaster << endl;
-		//	AddItem(pPlayervftable, pGoldMaster, 1, 0);
-
-		//}
+		if (GetAsyncKeyState(VK_NUMPAD3) & 1)
+		{
+			cout << "GiveAll Activated" << endl;
+			GiveAll(pGame, pPlayervftable);
+		}
 
 	}
-
+	getchar();
 	// clean up and eject dll
 	fclose(fConsole);
 	FreeConsole();

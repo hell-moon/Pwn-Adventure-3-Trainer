@@ -1,2 +1,5 @@
 ﻿  dllmain.cpp
-  memberfunctiondll.vcxproj -> E:\Misc\guidedHacking\new reversing folder\cole App for Function calling\memberfunctiondll\Debug\memberfunctiondll.dll
+  mem.cpp
+  proc.cpp
+  Generating Code...
+  memberfunctiondll.vcxproj -> X:\Pwn-Adventure-3-Trainer\Internal Trainer\memberfunctiondll\Debug\memberfunctiondll.dll
