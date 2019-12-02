@@ -30,7 +30,8 @@ bool bKeyPrev[255];
 bool bMenuEnabled = true;
 
 #define MENUITEMS 6
-bool bMenuItems[MENUITEMS];
+//bool bMenuItems[MENUITEMS];
+int bMenuItems[MENUITEMS];
 int iSelectedItem = 0;
 wchar_t wMenuItems[MENUITEMS][255] =
 {
@@ -50,14 +51,14 @@ void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFon
 	font->DrawTextA(0, String, strlen(String), &FontPos, DT_NOCLIP, D3DCOLOR_ARGB(a, r, g, b));
 }
 
-bool WorldToScreen(vec3 pos, vec2 &screen, float matrix[16], int windowWidth, int windowHeight)
+bool WorldToScreen(vec3 pos, vec2& screen, float matrix[16], int windowWidth, int windowHeight)
 {
 	//Matrix-vector Product, multiplying world(eye) coordinates by projection matrix = clipCoords
 	vec4 clipCoords;
-	clipCoords.x = pos.x*matrix[0] + pos.y*matrix[1] + pos.z*matrix[2] + matrix[3];
-	clipCoords.y = pos.x*matrix[4] + pos.y*matrix[5] + pos.z*matrix[6] + matrix[7];
-	clipCoords.z = pos.x*matrix[8] + pos.y*matrix[9] + pos.z*matrix[10] + matrix[11];
-	clipCoords.w = pos.x*matrix[12] + pos.y*matrix[13] + pos.z*matrix[14] + matrix[15];
+	clipCoords.x = pos.x * matrix[0] + pos.y * matrix[1] + pos.z * matrix[2] + matrix[3];
+	clipCoords.y = pos.x * matrix[4] + pos.y * matrix[5] + pos.z * matrix[6] + matrix[7];
+	clipCoords.z = pos.x * matrix[8] + pos.y * matrix[9] + pos.z * matrix[10] + matrix[11];
+	clipCoords.w = pos.x * matrix[12] + pos.y * matrix[13] + pos.z * matrix[14] + matrix[15];
 
 	if (clipCoords.w < 0.1f)
 		return false;
@@ -87,7 +88,7 @@ void DirectxFunctions::DirectXInit(HWND hwnd)
 	DirectX.Param.AutoDepthStencilFormat = D3DFMT_D16;
 	DirectX.Param.MultiSampleQuality = D3DMULTISAMPLE_NONE;
 	DirectX.Param.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	
+
 
 	if (FAILED(DirectX.Object->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &DirectX.Param, 0, &DirectX.Device)))
 		exit(1);
@@ -162,7 +163,8 @@ void DirectxFunctions::RenderDirectX()
 				else
 					color = D3DCOLOR_ARGB(225, 15, 250, 250);
 				swprintf(swf, wMenuItems[i]);
-				swprintf(swf2, L" %s", bMenuItems[i] ? L"ON" : L"OFF");
+				//swprintf(swf2, L" %s", bMenuItems[i] ? L"ON" : L"OFF");
+				swprintf(swf2, L" %d", bMenuItems[i]);
 				wcscat(swf, swf2);
 				DirectX.Font->DrawTextW(NULL, swf, -1, &pos, 0, color);
 
@@ -186,14 +188,19 @@ void DirectxFunctions::RenderDirectX()
 
 			if (bKeys[VK_NUMPAD0])
 			{
-				bMenuItems[iSelectedItem] = !bMenuItems[iSelectedItem];
+				// bMenuItems[iSelectedItem] = !bMenuItems[iSelectedItem];
+				bMenuItems[iSelectedItem]++;
 
 				// Mana Boost
 				if (iSelectedItem == 0)
 				{
+					int MAXOPTIONS = 2;
+					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
+						bMenuItems[iSelectedItem] = 0;
+
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 
-					if (bMenuItems[iSelectedItem] == true)
+					if (bMenuItems[iSelectedItem] > 0)
 					{
 						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
 					}
@@ -223,6 +230,10 @@ void DirectxFunctions::RenderDirectX()
 				// Health Boost
 				if (iSelectedItem == 1)
 				{
+					int MAXOPTIONS = 2;
+					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
+						bMenuItems[iSelectedItem] = 0;
+
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, healthAddr;
 					const int newHealth = 999999;
@@ -231,7 +242,8 @@ void DirectxFunctions::RenderDirectX()
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					healthAddr = mem::FindDMAAddy(firstLevelPtr, healthOffsets) - 0x40;
 
-					if (bMenuItems[iSelectedItem] == true)
+					//if (bMenuItems[iSelectedItem] == true)
+					if (bMenuItems[iSelectedItem] > 0)
 					{
 						*(int*)healthAddr = newHealth;
 					}
@@ -244,17 +256,27 @@ void DirectxFunctions::RenderDirectX()
 				// Speed Boost
 				if (iSelectedItem == 2)
 				{
+
+					int MAXOPTIONS = 3;
+					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
+						bMenuItems[iSelectedItem] = 0;
+
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, speedAddr;
-					const float newSpeed = 1000;
+					const float oneSpeed = 1000;
+					const float twoSpeed = 3000;
 					const float defaultSpeed = 200;
 					std::vector<unsigned int> speedOffsets = { 0x1c, 0x6c, 0x120 };
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					speedAddr = mem::FindDMAAddy(firstLevelPtr, speedOffsets);
 
-					if (bMenuItems[iSelectedItem] == true)
+					if (bMenuItems[iSelectedItem] == 2)
 					{
-						*(float*)speedAddr = newSpeed;
+						*(float*)speedAddr = twoSpeed;
+					}
+					else if (bMenuItems[iSelectedItem] == 1)
+					{
+						*(float*)speedAddr = oneSpeed;
 					}
 					else
 					{
@@ -265,17 +287,26 @@ void DirectxFunctions::RenderDirectX()
 				// Jump Boost
 				if (iSelectedItem == 3)
 				{
+					int MAXOPTIONS = 3;
+					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
+						bMenuItems[iSelectedItem] = 0;
+
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, jumpAddr;
-					const float newJump = 1800;
+					const float oneJump = 1800;
+					const float twoJump = 5000;
 					const float defaultJump = 420;
 					std::vector<unsigned int> jumpOffsets = { 0x1c, 0x6c, 0x124 };
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					jumpAddr = mem::FindDMAAddy(firstLevelPtr, jumpOffsets);
 
-					if (bMenuItems[iSelectedItem] == true)
+					if (bMenuItems[iSelectedItem] == 2)
 					{
-						*(float*)jumpAddr = newJump;
+						*(float*)jumpAddr = twoJump;
+					}
+					else if (bMenuItems[iSelectedItem] == 1)
+					{
+						*(float*)jumpAddr = oneJump;
 					}
 					else
 					{
@@ -302,9 +333,9 @@ void DirectxFunctions::RenderDirectX()
 					// game pointer
 					void* pGame = (void*)(gameLogicAddr + 0x9780);
 
-					typedef void* (__thiscall* _GetItemByName)(void* gamePtr, const char* name);
+					typedef void* (__thiscall * _GetItemByName)(void* gamePtr, const char* name);
 					_GetItemByName GetItemByName;
-					typedef bool(__thiscall* _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
+					typedef bool(__thiscall * _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
 					_AddItem AddItem;
 
 
@@ -388,7 +419,7 @@ void DirectxFunctions::RenderDirectX()
 				//EXIT
 				if (iSelectedItem == 5)
 				{
-					if (bMenuItems[iSelectedItem] == true)
+					if (bMenuItems[iSelectedItem] > 0)
 					{
 						//ON CODE..we close the application
 						exit(0);
@@ -418,7 +449,7 @@ void MsgBoxAddy(DWORD addy)
 #pragma region Mid Function Hook/Code cave
 /*Credits to InSaNe on MPGH for the original function*/
 //We make Length at the end optional as most jumps will be 5 or less bytes
-void PlaceJMP(BYTE *Address, DWORD jumpTo, DWORD length = 5)
+void PlaceJMP(BYTE* Address, DWORD jumpTo, DWORD length = 5)
 {
 	DWORD dwOldProtect, dwBkup, dwRelAddr;
 
@@ -433,12 +464,12 @@ void PlaceJMP(BYTE *Address, DWORD jumpTo, DWORD length = 5)
 
 	// Write the offset to where we're gonna jump
 	//The instruction will then become JMP ff002123 for example
-	*((DWORD *)(Address + 0x1)) = dwRelAddr;
+	*((DWORD*)(Address + 0x1)) = dwRelAddr;
 
 	// Overwrite the rest of the bytes with NOPs
 	//ensuring no instruction is Half overwritten(To prevent any crashes)
 	for (DWORD x = 0x5; x < length; x++)
-		*(Address + x) = 0x90;
+		* (Address + x) = 0x90;
 
 	// Restore the default permissions
 	VirtualProtect(Address, length, dwOldProtect, &dwBkup);
@@ -447,7 +478,7 @@ void PlaceJMP(BYTE *Address, DWORD jumpTo, DWORD length = 5)
 #pragma region PATTERN SCANNING
 //Get all module related info, this will include the base DLL. 
 //and the size of the module
-MODULEINFO GetModuleInfo(char *szModule)
+MODULEINFO GetModuleInfo(char* szModule)
 {
 	MODULEINFO modinfo = { 0 };
 	HMODULE hModule = GetModuleHandle(szModule);
@@ -457,7 +488,7 @@ MODULEINFO GetModuleInfo(char *szModule)
 	return modinfo;
 }
 
-DWORD FindPattern(char *module, char *pattern, char *mask)
+DWORD FindPattern(char* module, char* pattern, char* mask)
 {
 	//Get all module related information
 	MODULEINFO mInfo = GetModuleInfo(module);
@@ -545,11 +576,11 @@ DWORD WINAPI initiateHook(LPVOID param)
 		"\xC7\x47\x00\x00\x00\x00\x00\x85\xF6", "xx?????xx");*/
 
 
-	// entityhook with specifics added
-	/*DWORD entityAddy = FindPattern("PwnAdventure3-Win32-Shipping.exe",
-		"\xC7\x47\x30\x7D\x00\x00\x00\x85\xF6", "xxxxxxxxx");*/
-	
-	// entityhook with offsets
+		// entityhook with specifics added
+		/*DWORD entityAddy = FindPattern("PwnAdventure3-Win32-Shipping.exe",
+			"\xC7\x47\x30\x7D\x00\x00\x00\x85\xF6", "xxxxxxxxx");*/
+
+			// entityhook with offsets
 	uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 
 	uintptr_t bearInitPtr, bearHealthLoad = 0;
@@ -558,7 +589,7 @@ DWORD WINAPI initiateHook(LPVOID param)
 	DWORD entityAddy = (DWORD)bearHealthLoad;
 
 	// need to go back to BearInit + 0x45 when we're done
-	
+
 	// MsgBoxAddy(entityAddy);
 	EntlistJmpBack = entityAddy + 0x7;
 	PlaceJMP((BYTE*)entityAddy, (DWORD)entityhook, 7);

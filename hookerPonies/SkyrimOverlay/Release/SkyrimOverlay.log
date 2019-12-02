@@ -1,0 +1,22 @@
+﻿  DirectX.cpp
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\DirectX.cpp(166,21): warning C4996:  'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\corecrt_wstring.h(100): message :  see declaration of 'wcscat'
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\DirectX.cpp(164,1): warning C4996:  'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\corecrt_wstdio.h(1822): message :  see declaration of 'swprintf'
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\DirectX.cpp(165,1): warning C4996:  'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\corecrt_wstdio.h(1822): message :  see declaration of 'swprintf'
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\DirectX.cpp(414,1): warning C4996:  'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Drawing.cpp
+  Functions.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\stdio.h(1774): message :  see declaration of 'sprintf'
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\Functions.cpp(11,131): warning C4474:  'printf' : too many arguments passed for format string
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\Functions.cpp(11,131): message :  placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\Functions.cpp(28,8): error C2664:  'int strcmp(const char *,const char *)': cannot convert argument 1 from 'WCHAR [256]' to 'const char *'
+  mem.cpp
+  ModuleMgr.cpp
+  Overlay.cpp
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\Functions.cpp(28,29): message :  Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+C:\Users\James\Documents\functionalHookerPonies\Pwn-Adventure-3-Trainer-menuTesting\hookerPonies\SkyrimOverlay\Overlay.cpp(11,1): warning C4996:  'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  pch.cpp
+  proc.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\stdio.h(1774): message :  see declaration of 'sprintf'

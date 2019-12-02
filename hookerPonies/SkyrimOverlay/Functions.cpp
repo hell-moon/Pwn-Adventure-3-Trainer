@@ -25,7 +25,8 @@ DWORD ProcessFunctions::GetModuleBase(DWORD dwProcessIdentifier, TCHAR *lpszModu
 		{
 			do
 			{
-				if (strcmp(ModuleEntry32.szModule, lpszModuleName) == 0)
+				CONST CHAR* newThing = (CHAR*)ModuleEntry32.szModule;
+				if (strcmp(newThing, lpszModuleName) == 0)
 				{
 					dwModuleBaseAddress = (DWORD)ModuleEntry32.modBaseAddr;
 					break;
