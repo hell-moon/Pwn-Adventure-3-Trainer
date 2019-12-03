@@ -10,9 +10,12 @@
 #include <vector>
 #include <iostream>
 
+
 using std::cout;
 using std::endl;
 using std::vector;
+
+
 
 directx_t DirectX;
 ID3DXFont* pFont;
@@ -27,21 +30,39 @@ bool bInitialized = false;
 bool bKeys[255];
 bool bKeyPrev[255];
 
-bool bMenuEnabled = true;
+bool menuVisible = true;
 
-#define MENUITEMS 6
-//bool bMenuItems[MENUITEMS];
-int bMenuItems[MENUITEMS];
-int iSelectedItem = 0;
-wchar_t wMenuItems[MENUITEMS][255] =
+// how many cheats does out trainer have?
+#define NUMCHEATS 6
+// create an array that has a int flag to denote the state of each cheat
+int currentCheatSetting[NUMCHEATS];
+// which cheat has the player selected?
+int highlightedCheat = 0;
+// create an array of wide strings to serve as a list in the menu
+wchar_t cheatMenuEntries[NUMCHEATS][255] =
 {
-	L"Mana",
-	L"Health",
-	L"Speed",
-	L"Jump",
-	L"Guns",
-	L"EXIT"
+	L"Mana     ",
+	L"Health   ",
+	L"Speed    ",
+	L"Jump     ",
+	L"Guns     ",
+	L"Teleport "
 };
+// create an array that stores the number of settings for each cheat
+int numCheatSettings[6] = { 2,2,3,3,2,3 };
+
+
+int legendaryMode = 0;
+int lastCommittedSetting = 0;
+int uncommittedChanges = 0;
+
+wchar_t manaOptions[2][255] = {	L"default",	L"infinite" };
+wchar_t healthOptions[2][255] = { L"default", L"working" };
+wchar_t speedOptions[3][255] = { L"default", L"light jog", L"hauling ass" };
+wchar_t jumpOptions[3][255] = {	L"default",	L"big hops", L"bigger hops" };
+wchar_t gunOptions[2][255] = {	L"default",	L"legendary" };
+wchar_t teleOptions[3][255] = { L"pirate_bay", L"tails_mountain", L"hidden_island" };
+
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
 {
@@ -129,10 +150,10 @@ void DirectxFunctions::RenderDirectX()
 		}
 		if (bKeys[VK_END])
 		{
-			bMenuEnabled = !bMenuEnabled;
+			menuVisible = !menuVisible;
 		}
 
-		if (bMenuEnabled)
+		if (menuVisible)
 		{
 			RECT pos;
 			pos.right = 1001;
@@ -155,52 +176,104 @@ void DirectxFunctions::RenderDirectX()
 			wchar_t swf[255];
 			wchar_t swf2[255];
 
-			for (int i = 0; i < MENUITEMS; i++)
+			for (int i = 0; i < NUMCHEATS; i++)
 			{
 				D3DCOLOR color;
-				if (iSelectedItem == i)
+				if (highlightedCheat == i)
 					color = D3DCOLOR_ARGB(225, 15, 250, 15);
 				else
 					color = D3DCOLOR_ARGB(225, 15, 250, 250);
-				swprintf(swf, wMenuItems[i]);
-				//swprintf(swf2, L" %s", bMenuItems[i] ? L"ON" : L"OFF");
-				swprintf(swf2, L" %d", bMenuItems[i]);
+				swprintf(swf, cheatMenuEntries[i]);
+
+				if (i == 0)
+					swprintf(swf2, manaOptions[currentCheatSetting[i]]);
+				else if (i == 1)
+					swprintf(swf2, healthOptions[currentCheatSetting[i]]);
+				else if (i == 2)
+					swprintf(swf2, speedOptions[currentCheatSetting[i]]);
+				else if (i == 3)
+					swprintf(swf2, jumpOptions[currentCheatSetting[i]]);
+				else if (i == 4)
+					swprintf(swf2, gunOptions[currentCheatSetting[i]]);
+				else if (i == 5)
+					swprintf(swf2, teleOptions[currentCheatSetting[i]]);
+
 				wcscat(swf, swf2);
 				DirectX.Font->DrawTextW(NULL, swf, -1, &pos, 0, color);
 
 				pos.top += 16;
 			}
 
-			if (bKeys[VK_NUMPAD5])
+			if (bKeys[VK_NUMPAD8])
 			{
-				if (iSelectedItem > 0)
+				// overwrite any uncommitted change
+				if (uncommittedChanges == 1)
 				{
-					iSelectedItem--;
+					currentCheatSetting[highlightedCheat] = lastCommittedSetting;
+					uncommittedChanges = 0;
+				}
+				if (highlightedCheat > 0)
+				{
+					highlightedCheat--;
 				}
 			}
 			if (bKeys[VK_NUMPAD2])
 			{
-				if (iSelectedItem < MENUITEMS - 1)
+				// overwrite any uncommitted change
+				if (uncommittedChanges == 1)
 				{
-					iSelectedItem++;
+					currentCheatSetting[highlightedCheat] = lastCommittedSetting;
+					uncommittedChanges = 0;
+				}
+				if (highlightedCheat < NUMCHEATS - 1)
+				{
+					highlightedCheat++;
 				}
 			}
+			if (bKeys[VK_NUMPAD4])
+			{
+				if (uncommittedChanges == 0)
+				{
+					lastCommittedSetting = currentCheatSetting[highlightedCheat];
+					uncommittedChanges = 1;
+				}
+				// peak left
+				if (currentCheatSetting[highlightedCheat] > 0)
+					currentCheatSetting[highlightedCheat]--;
+	
+			}
+			if (bKeys[VK_NUMPAD6])
+			{
+				// store a the last committed change if this is the first time the user tries to browse optons
+				if (uncommittedChanges == 0)
+				{
+					lastCommittedSetting = currentCheatSetting[highlightedCheat];
+					uncommittedChanges = 1;
+				}
+				// check to see that temp is different
+				// peak right
+				if ( currentCheatSetting[highlightedCheat] < numCheatSettings[highlightedCheat] - 1)
+					currentCheatSetting[highlightedCheat]++;
+
+			}
+
 
 			if (bKeys[VK_NUMPAD0])
 			{
-				// bMenuItems[iSelectedItem] = !bMenuItems[iSelectedItem];
-				bMenuItems[iSelectedItem]++;
+				// commit any changes
+				lastCommittedSetting = currentCheatSetting[highlightedCheat];
+				uncommittedChanges = 0;
 
 				// Mana Boost
-				if (iSelectedItem == 0)
+				if (highlightedCheat == 0)
 				{
 					int MAXOPTIONS = 2;
-					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
-						bMenuItems[iSelectedItem] = 0;
+					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+						currentCheatSetting[highlightedCheat] = 0;
 
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 
-					if (bMenuItems[iSelectedItem] > 0)
+					if (currentCheatSetting[highlightedCheat] > 0)
 					{
 						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
 					}
@@ -208,31 +281,14 @@ void DirectxFunctions::RenderDirectX()
 					{
 						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x2B\xC2", 2);
 					}
-
-					/*uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtr, manaAddr;
-					const int newMana = 999;
-					const int defaultMana = 100;
-					std::vector<unsigned int> manaOffsets = { 0x1c, 0x6c, 0xbc };
-					firstLevelPtr = gameLogicAddr + 0x97D7C;
-					manaAddr = mem::FindDMAAddy(firstLevelPtr, manaOffsets);
-
-					if (bMenuItems[iSelectedItem] == true)
-					{
-						*(int*)manaAddr = newMana;
-					}
-					else
-					{
-						*(int*)manaAddr = defaultMana;
-					}*/
 				}
 
 				// Health Boost
-				if (iSelectedItem == 1)
+				if (highlightedCheat == 1)
 				{
 					int MAXOPTIONS = 2;
-					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
-						bMenuItems[iSelectedItem] = 0;
+					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+						currentCheatSetting[highlightedCheat] = 0;
 
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, healthAddr;
@@ -243,7 +299,7 @@ void DirectxFunctions::RenderDirectX()
 					healthAddr = mem::FindDMAAddy(firstLevelPtr, healthOffsets) - 0x40;
 
 					//if (bMenuItems[iSelectedItem] == true)
-					if (bMenuItems[iSelectedItem] > 0)
+					if (currentCheatSetting[highlightedCheat] > 0)
 					{
 						*(int*)healthAddr = newHealth;
 					}
@@ -254,12 +310,12 @@ void DirectxFunctions::RenderDirectX()
 				}
 
 				// Speed Boost
-				if (iSelectedItem == 2)
+				if (highlightedCheat == 2)
 				{
 
 					int MAXOPTIONS = 3;
-					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
-						bMenuItems[iSelectedItem] = 0;
+					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+						currentCheatSetting[highlightedCheat] = 0;
 
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, speedAddr;
@@ -270,13 +326,14 @@ void DirectxFunctions::RenderDirectX()
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					speedAddr = mem::FindDMAAddy(firstLevelPtr, speedOffsets);
 
-					if (bMenuItems[iSelectedItem] == 2)
+					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						*(float*)speedAddr = twoSpeed;
 					}
-					else if (bMenuItems[iSelectedItem] == 1)
+					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
 						*(float*)speedAddr = oneSpeed;
+
 					}
 					else
 					{
@@ -285,11 +342,11 @@ void DirectxFunctions::RenderDirectX()
 				}
 
 				// Jump Boost
-				if (iSelectedItem == 3)
+				if (highlightedCheat == 3)
 				{
 					int MAXOPTIONS = 3;
-					if (bMenuItems[iSelectedItem] == MAXOPTIONS)
-						bMenuItems[iSelectedItem] = 0;
+					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+						currentCheatSetting[highlightedCheat] = 0;
 
 					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 					uintptr_t firstLevelPtr, jumpAddr;
@@ -300,11 +357,11 @@ void DirectxFunctions::RenderDirectX()
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					jumpAddr = mem::FindDMAAddy(firstLevelPtr, jumpOffsets);
 
-					if (bMenuItems[iSelectedItem] == 2)
+					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						*(float*)jumpAddr = twoJump;
 					}
-					else if (bMenuItems[iSelectedItem] == 1)
+					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
 						*(float*)jumpAddr = oneJump;
 					}
@@ -315,120 +372,138 @@ void DirectxFunctions::RenderDirectX()
 				}
 
 				// Give Legendary Items
-				if (iSelectedItem == 4)
+				if (highlightedCheat == 4)
 				{
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
-					uintptr_t getItemByNameFuncOff = 0x1DE20;
-					uintptr_t addItemFuncOff = 0x51BA0;
-
-					// various offsets list
-					vector<unsigned int> playerPointerAddressOffset = { 0x1c, 0x6c };
-					vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
-
-					// player pointer
-					void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerPointerAddressOffset);
-					void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
-
-					// game pointer
-					void* pGame = (void*)(gameLogicAddr + 0x9780);
-
-					typedef void* (__thiscall * _GetItemByName)(void* gamePtr, const char* name);
-					_GetItemByName GetItemByName;
-					typedef bool(__thiscall * _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
-					_AddItem AddItem;
-
-
-					// create instance of getItemByName function
-					GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
-
-					// create instance of addItem function
-					AddItem = (_AddItem)(gameLogicAddr + addItemFuncOff);
-
-					// item names
-					const char* sGreatBallsOfFire = "GreatBallsOfFire";
-					const char* sROPChainGun = "ROPChainGun";
-					const char* sGoldMaster = "GoldenMaster";
-					const char* sRemoteExploit = "RemoteExploit";
-					const char* sOPFireball = "CharStar";
-					const char* sHeapSpray = "HeapSpray";
-					const char* sHandCannon = "HandCannon";
-					const char* sPwnCoin = "Coin";
-
-					// ammo names
-					const char* sPistolAmmo = "PistolAmmo";
-					const char* sShotgunAmmo = "ShotgunAmmo";
-					const char* sSniperAmmo = "SniperAmmo";
-					const char* sRevolverAmmo = "RevolverAmmo";
-					const char* sRifleAmmo = "RifleAmmo";
-
-					// hold pointer to item
-					void* pGBF = GetItemByName(pGame, sGreatBallsOfFire);
-					cout << sGreatBallsOfFire << " address: " << std::hex << pGBF << endl;
-					AddItem(pPlayervftable, pGBF, 1, 0);
-
-					void* pOPFireball = GetItemByName(pGame, sOPFireball);
-					cout << sOPFireball << " address: " << std::hex << pOPFireball << endl;
-					AddItem(pPlayervftable, pOPFireball, 1, 0);
-
-					void* pROPGun = GetItemByName(pGame, sROPChainGun);
-					cout << sROPChainGun << " address: " << std::hex << pROPGun << endl;
-					AddItem(pPlayervftable, pROPGun, 1, 0);
-
-					void* pGoldMaster = GetItemByName(pGame, sGoldMaster);
-					cout << sGoldMaster << " address: " << std::hex << pGoldMaster << endl;
-					AddItem(pPlayervftable, pGoldMaster, 1, 0);
-
-					void* pRemoteExploit = GetItemByName(pGame, sRemoteExploit);
-					cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
-					AddItem(pPlayervftable, pRemoteExploit, 1, 0);
-
-					void* pHeapSpray = GetItemByName(pGame, sHeapSpray);
-					cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
-					AddItem(pPlayervftable, pHeapSpray, 1, 0);
-
-					void* pHandCannon = GetItemByName(pGame, sHandCannon);
-					cout << sHandCannon << " address: " << std::hex << pHandCannon << endl;
-					AddItem(pPlayervftable, pHandCannon, 1, 0);
-
-					void* pPistolAmmo = GetItemByName(pGame, sPistolAmmo);
-					cout << sPistolAmmo << " address: " << std::hex << pPistolAmmo << endl;
-					AddItem(pPlayervftable, pPistolAmmo, 9999, 1);
-
-					void* pShotgunAmmo = GetItemByName(pGame, sShotgunAmmo);
-					cout << sShotgunAmmo << " address: " << std::hex << pShotgunAmmo << endl;
-					AddItem(pPlayervftable, pShotgunAmmo, 9999, 1);
-
-					void* pRifleAmmo = GetItemByName(pGame, sRifleAmmo);
-					cout << sRifleAmmo << " address: " << std::hex << pRifleAmmo << endl;
-					AddItem(pPlayervftable, pRifleAmmo, 9999, 1);
-
-					void* pSniperAmmo = GetItemByName(pGame, sSniperAmmo);
-					cout << sSniperAmmo << " address: " << std::hex << pSniperAmmo << endl;
-					AddItem(pPlayervftable, pSniperAmmo, 9999, 1);
-
-					void* pRevolverAmmo = GetItemByName(pGame, sRevolverAmmo);
-					cout << sRevolverAmmo << " address: " << std::hex << pRevolverAmmo << endl;
-					AddItem(pPlayervftable, pRevolverAmmo, 9999, 1);
-
-					void* pPwnCoin = GetItemByName(pGame, sPwnCoin);
-					cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
-					AddItem(pPlayervftable, pPwnCoin, 9999, 1);
-				}
-
-				//EXIT
-				if (iSelectedItem == 5)
-				{
-					if (bMenuItems[iSelectedItem] > 0)
+					if (legendaryMode == 0)
 					{
-						//ON CODE..we close the application
-						exit(0);
+
+						uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
+						uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
+						uintptr_t getItemByNameFuncOff = 0x1DE20;
+						uintptr_t addItemFuncOff = 0x51BA0;
+
+						// various offsets list
+						vector<unsigned int> playerPointerAddressOffset = { 0x1c, 0x6c };
+						vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
+
+						// player pointer
+						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerPointerAddressOffset);
+						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
+
+						// game pointer
+						void* pGame = (void*)(gameLogicAddr + 0x9780);
+
+						typedef void* (__thiscall * _GetItemByName)(void* gamePtr, const char* name);
+						_GetItemByName GetItemByName;
+						typedef bool(__thiscall * _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
+						_AddItem AddItem;
+
+
+						// create instance of getItemByName function
+						GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
+
+						// create instance of addItem function
+						AddItem = (_AddItem)(gameLogicAddr + addItemFuncOff);
+
+						// item names
+						const char* sGreatBallsOfFire = "GreatBallsOfFire";
+						const char* sROPChainGun = "ROPChainGun";
+						const char* sGoldMaster = "GoldenMaster";
+						const char* sRemoteExploit = "RemoteExploit";
+						const char* sOPFireball = "CharStar";
+						const char* sHeapSpray = "HeapSpray";
+						const char* sHandCannon = "HandCannon";
+						const char* sPwnCoin = "Coin";
+
+						// ammo names
+						const char* sPistolAmmo = "PistolAmmo";
+						const char* sShotgunAmmo = "ShotgunAmmo";
+						const char* sSniperAmmo = "SniperAmmo";
+						const char* sRevolverAmmo = "RevolverAmmo";
+						const char* sRifleAmmo = "RifleAmmo";
+
+						// hold pointer to item
+						void* pGBF = GetItemByName(pGame, sGreatBallsOfFire);
+						cout << sGreatBallsOfFire << " address: " << std::hex << pGBF << endl;
+						AddItem(pPlayervftable, pGBF, 1, 0);
+
+						void* pOPFireball = GetItemByName(pGame, sOPFireball);
+						cout << sOPFireball << " address: " << std::hex << pOPFireball << endl;
+						AddItem(pPlayervftable, pOPFireball, 1, 0);
+
+						void* pROPGun = GetItemByName(pGame, sROPChainGun);
+						cout << sROPChainGun << " address: " << std::hex << pROPGun << endl;
+						AddItem(pPlayervftable, pROPGun, 1, 0);
+
+						void* pGoldMaster = GetItemByName(pGame, sGoldMaster);
+						cout << sGoldMaster << " address: " << std::hex << pGoldMaster << endl;
+						AddItem(pPlayervftable, pGoldMaster, 1, 0);
+
+						void* pRemoteExploit = GetItemByName(pGame, sRemoteExploit);
+						cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
+						AddItem(pPlayervftable, pRemoteExploit, 1, 0);
+
+						void* pHeapSpray = GetItemByName(pGame, sHeapSpray);
+						cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
+						AddItem(pPlayervftable, pHeapSpray, 1, 0);
+
+						void* pHandCannon = GetItemByName(pGame, sHandCannon);
+						cout << sHandCannon << " address: " << std::hex << pHandCannon << endl;
+						AddItem(pPlayervftable, pHandCannon, 1, 0);
+
+						void* pPistolAmmo = GetItemByName(pGame, sPistolAmmo);
+						cout << sPistolAmmo << " address: " << std::hex << pPistolAmmo << endl;
+						AddItem(pPlayervftable, pPistolAmmo, 9999, 1);
+
+						void* pShotgunAmmo = GetItemByName(pGame, sShotgunAmmo);
+						cout << sShotgunAmmo << " address: " << std::hex << pShotgunAmmo << endl;
+						AddItem(pPlayervftable, pShotgunAmmo, 9999, 1);
+
+						void* pRifleAmmo = GetItemByName(pGame, sRifleAmmo);
+						cout << sRifleAmmo << " address: " << std::hex << pRifleAmmo << endl;
+						AddItem(pPlayervftable, pRifleAmmo, 9999, 1);
+
+						void* pSniperAmmo = GetItemByName(pGame, sSniperAmmo);
+						cout << sSniperAmmo << " address: " << std::hex << pSniperAmmo << endl;
+						AddItem(pPlayervftable, pSniperAmmo, 9999, 1);
+
+						void* pRevolverAmmo = GetItemByName(pGame, sRevolverAmmo);
+						cout << sRevolverAmmo << " address: " << std::hex << pRevolverAmmo << endl;
+						AddItem(pPlayervftable, pRevolverAmmo, 9999, 1);
+
+						void* pPwnCoin = GetItemByName(pGame, sPwnCoin);
+						cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
+						AddItem(pPlayervftable, pPwnCoin, 9999, 1);
+
+						legendaryMode = 1;
 
 					}
 					else
 					{
-						//OFF
+						currentCheatSetting[highlightedCheat] = 1;
 					}
+
+				}
+
+				// Teleport
+				if (highlightedCheat == 5)
+				{
+					int MAXOPTIONS = 3;
+					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+						currentCheatSetting[highlightedCheat] = 0;
+
+					//if (currentCheatState[highlightedCheat] == 2)
+					//{
+
+					//}
+					//else if (currentCheatState[highlightedCheat] == 1)
+					//{
+
+					//}
+					//else
+					//{
+
+					//}
 				}
 			}
 		}
