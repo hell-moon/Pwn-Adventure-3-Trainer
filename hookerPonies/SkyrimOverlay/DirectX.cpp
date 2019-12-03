@@ -1,14 +1,18 @@
 #include "DirectX.h"
-#include <Psapi.h>
+#include "framework.h"
+#include "functioncalls.h"
 #include "modulemgr.h"
 #include "main.h"
 #include "Hooks_reclass.h"
 #include "pch.h"
 #include "mem.h"
-#include "framework.h"
 #include "proc.h"
+#include <Psapi.h>
 #include <vector>
 #include <iostream>
+
+
+
 
 
 using std::cout;
@@ -51,6 +55,8 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 // create an array that stores the number of settings for each cheat
 int numCheatSettings[6] = { 2,2,3,3,2,3 };
 
+uintptr_t gameLogicAddr = NULL;
+uintptr_t firstLevelPtrAddr = NULL;
 
 int legendaryMode = 0;
 int lastCommittedSetting = 0;
@@ -386,18 +392,11 @@ void DirectxFunctions::RenderDirectX()
 						vector<unsigned int> playerPointerAddressOffset = { 0x1c, 0x6c };
 						vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
 
-						// player pointer
+						//// player pointer
 						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerPointerAddressOffset);
 						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
-
 						// game pointer
-						void* pGame = (void*)(gameLogicAddr + 0x9780);
-
-						typedef void* (__thiscall * _GetItemByName)(void* gamePtr, const char* name);
-						_GetItemByName GetItemByName;
-						typedef bool(__thiscall * _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
-						_AddItem AddItem;
-
+						void* pGame = (void*)(gameLogicAddr + 0x9780);					
 
 						// create instance of getItemByName function
 						GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
@@ -405,78 +404,60 @@ void DirectxFunctions::RenderDirectX()
 						// create instance of addItem function
 						AddItem = (_AddItem)(gameLogicAddr + addItemFuncOff);
 
-						// item names
-						const char* sGreatBallsOfFire = "GreatBallsOfFire";
-						const char* sROPChainGun = "ROPChainGun";
-						const char* sGoldMaster = "GoldenMaster";
-						const char* sRemoteExploit = "RemoteExploit";
-						const char* sOPFireball = "CharStar";
-						const char* sHeapSpray = "HeapSpray";
-						const char* sHandCannon = "HandCannon";
-						const char* sPwnCoin = "Coin";
-
-						// ammo names
-						const char* sPistolAmmo = "PistolAmmo";
-						const char* sShotgunAmmo = "ShotgunAmmo";
-						const char* sSniperAmmo = "SniperAmmo";
-						const char* sRevolverAmmo = "RevolverAmmo";
-						const char* sRifleAmmo = "RifleAmmo";
-
 						// hold pointer to item
 						void* pGBF = GetItemByName(pGame, sGreatBallsOfFire);
-						cout << sGreatBallsOfFire << " address: " << std::hex << pGBF << endl;
+						//cout << sGreatBallsOfFire << " address: " << std::hex << pGBF << endl;
 						AddItem(pPlayervftable, pGBF, 1, 0);
 
 						void* pOPFireball = GetItemByName(pGame, sOPFireball);
-						cout << sOPFireball << " address: " << std::hex << pOPFireball << endl;
+						//cout << sOPFireball << " address: " << std::hex << pOPFireball << endl;
 						AddItem(pPlayervftable, pOPFireball, 1, 0);
 
 						void* pROPGun = GetItemByName(pGame, sROPChainGun);
-						cout << sROPChainGun << " address: " << std::hex << pROPGun << endl;
+						//cout << sROPChainGun << " address: " << std::hex << pROPGun << endl;
 						AddItem(pPlayervftable, pROPGun, 1, 0);
 
 						void* pGoldMaster = GetItemByName(pGame, sGoldMaster);
-						cout << sGoldMaster << " address: " << std::hex << pGoldMaster << endl;
+						//cout << sGoldMaster << " address: " << std::hex << pGoldMaster << endl;
 						AddItem(pPlayervftable, pGoldMaster, 1, 0);
 
 						void* pRemoteExploit = GetItemByName(pGame, sRemoteExploit);
-						cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
+						//cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
 						AddItem(pPlayervftable, pRemoteExploit, 1, 0);
 
 						void* pHeapSpray = GetItemByName(pGame, sHeapSpray);
-						cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
+						//cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
 						AddItem(pPlayervftable, pHeapSpray, 1, 0);
 
 						void* pHandCannon = GetItemByName(pGame, sHandCannon);
-						cout << sHandCannon << " address: " << std::hex << pHandCannon << endl;
+						//cout << sHandCannon << " address: " << std::hex << pHandCannon << endl;
 						AddItem(pPlayervftable, pHandCannon, 1, 0);
 
 						void* pPistolAmmo = GetItemByName(pGame, sPistolAmmo);
-						cout << sPistolAmmo << " address: " << std::hex << pPistolAmmo << endl;
+						//cout << sPistolAmmo << " address: " << std::hex << pPistolAmmo << endl;
 						AddItem(pPlayervftable, pPistolAmmo, 9999, 1);
 
 						void* pShotgunAmmo = GetItemByName(pGame, sShotgunAmmo);
-						cout << sShotgunAmmo << " address: " << std::hex << pShotgunAmmo << endl;
+						//cout << sShotgunAmmo << " address: " << std::hex << pShotgunAmmo << endl;
 						AddItem(pPlayervftable, pShotgunAmmo, 9999, 1);
 
 						void* pRifleAmmo = GetItemByName(pGame, sRifleAmmo);
-						cout << sRifleAmmo << " address: " << std::hex << pRifleAmmo << endl;
+						//cout << sRifleAmmo << " address: " << std::hex << pRifleAmmo << endl;
 						AddItem(pPlayervftable, pRifleAmmo, 9999, 1);
 
 						void* pSniperAmmo = GetItemByName(pGame, sSniperAmmo);
-						cout << sSniperAmmo << " address: " << std::hex << pSniperAmmo << endl;
+						//cout << sSniperAmmo << " address: " << std::hex << pSniperAmmo << endl;
 						AddItem(pPlayervftable, pSniperAmmo, 9999, 1);
 
 						void* pRevolverAmmo = GetItemByName(pGame, sRevolverAmmo);
-						cout << sRevolverAmmo << " address: " << std::hex << pRevolverAmmo << endl;
+						//cout << sRevolverAmmo << " address: " << std::hex << pRevolverAmmo << endl;
 						AddItem(pPlayervftable, pRevolverAmmo, 9999, 1);
 
 						void* pPwnCoin = GetItemByName(pGame, sPwnCoin);
-						cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
+						//cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
 						AddItem(pPlayervftable, pPwnCoin, 9999, 1);
 
 						legendaryMode = 1;
-
 					}
 					else
 					{

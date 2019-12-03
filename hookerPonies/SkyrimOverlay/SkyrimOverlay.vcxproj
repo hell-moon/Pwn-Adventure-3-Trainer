@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="functioncalls.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="ModuleMgr.cpp" />
@@ -100,6 +101,8 @@
   <ItemGroup>
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Drawing.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="functioncalls.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Hooks_reclass.h" />
     <ClInclude Include="Main.h" />
