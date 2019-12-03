@@ -9,6 +9,7 @@
 #include "proc.h"
 #include <vector>
 #include <iostream>
+#include "hooks.h"
 
 using std::cout;
 using std::endl;
@@ -54,11 +55,11 @@ int legendaryMode = 0;
 int lastCommittedSetting = 0;
 int uncommittedChanges = 0;
 
-wchar_t manaOptions[2][255] = {	L"default",	L"infinite" };
+wchar_t manaOptions[2][255] = { L"default",	L"infinite" };
 wchar_t healthOptions[2][255] = { L"default", L"invincible" };
 wchar_t speedOptions[3][255] = { L"default", L"light jog", L"hauling ass" };
-wchar_t jumpOptions[3][255] = {	L"default",	L"big hops", L"bigger hops" };
-wchar_t gunOptions[2][255] = {	L"default",	L"legendary" };
+wchar_t jumpOptions[3][255] = { L"default",	L"big hops", L"bigger hops" };
+wchar_t gunOptions[2][255] = { L"default",	L"legendary" };
 wchar_t teleOptions[3][255] = { L"pirate_bay", L"tails_mountain", L"hidden_island" };
 
 
@@ -126,7 +127,7 @@ void DirectxFunctions::RenderDirectX()
 	// get address of gamelogic.dll
 	uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
 	// from gamelogic.dll, use offset to get address of player structure
-	uintptr_t firstLevelPtr = gameLogicAddr + 0x97D7C;
+	uintptr_t playerPtr = gameLogicAddr + 0x97D7C;
 
 	DirectX.Device->BeginScene();
 	if (GetForegroundWindow() == Target.Window)
@@ -242,7 +243,7 @@ void DirectxFunctions::RenderDirectX()
 				// peak left
 				if (currentCheatSetting[highlightedCheat] > 0)
 					currentCheatSetting[highlightedCheat]--;
-	
+
 			}
 			if (bKeys[VK_NUMPAD6])
 			{
@@ -254,7 +255,7 @@ void DirectxFunctions::RenderDirectX()
 				}
 				// check to see that temp is different
 				// peak right
-				if ( currentCheatSetting[highlightedCheat] < numCheatSettings[highlightedCheat] - 1)
+				if (currentCheatSetting[highlightedCheat] < numCheatSettings[highlightedCheat] - 1)
 					currentCheatSetting[highlightedCheat]++;
 
 			}
@@ -320,8 +321,7 @@ void DirectxFunctions::RenderDirectX()
 					const float twoSpeed = 3000;
 					const float defaultSpeed = 200;
 					std::vector<unsigned int> speedOffsets = { 0x1c, 0x6c, 0x120 };
-					firstLevelPtr = gameLogicAddr + 0x97D7C;
-					speedAddr = mem::FindDMAAddy(firstLevelPtr, speedOffsets);
+					speedAddr = mem::FindDMAAddy(playerPtr, speedOffsets);
 
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
@@ -352,8 +352,8 @@ void DirectxFunctions::RenderDirectX()
 					const float twoJump = 5000;
 					const float defaultJump = 420;
 					std::vector<unsigned int> jumpOffsets = { 0x1c, 0x6c, 0x124 };
-					
-					jumpAddr = mem::FindDMAAddy(firstLevelPtr, jumpOffsets);
+
+					jumpAddr = mem::FindDMAAddy(playerPtr, jumpOffsets);
 
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
@@ -382,15 +382,15 @@ void DirectxFunctions::RenderDirectX()
 						vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
 
 						// player pointer
-						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerPointerAddressOffset);
-						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
+						void* pPlayer = (void*)mem::FindDMAAddy(playerPtr, playerPointerAddressOffset);
+						void* pPlayervftable = (void*)mem::FindDMAAddy(playerPtr, playerVftableAddr);
 
 						// game pointer
 						void* pGame = (void*)(gameLogicAddr + 0x9780);
 
-						typedef void* (__thiscall * _GetItemByName)(void* gamePtr, const char* name);
+						typedef void* (__thiscall* _GetItemByName)(void* gamePtr, const char* name);
 						_GetItemByName GetItemByName;
-						typedef bool(__thiscall * _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
+						typedef bool(__thiscall* _AddItem)(void* playervftblptr, void* IItemPtr, unsigned int count, bool allowPartial);
 						_AddItem AddItem;
 
 
@@ -559,7 +559,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	{
 		hInstance = hModule;
 		CreateThread(0, NULL, ThreadProc, (LPVOID)L"X", NULL, NULL);
-		CreateThread(0, 0, initiateHook, 0, 0, 0);
+		//CreateThread(0, 0, initiateHook, 0, 0, 0);
 	}
 	return TRUE;
 }
