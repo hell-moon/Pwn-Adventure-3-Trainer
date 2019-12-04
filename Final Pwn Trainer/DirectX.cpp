@@ -272,6 +272,7 @@ void DirectxFunctions::RenderDirectX()
 				uncommittedChanges = 0;
 
 				// Mana Boost
+				// Hacking Method:  MemPatch / Direct memory write to function that controls player mana
 				if (highlightedCheat == 0)
 				{
 					int MAXOPTIONS = 2;
@@ -387,41 +388,36 @@ void DirectxFunctions::RenderDirectX()
 						currentCheatSetting[highlightedCheat] = 0;
 
 					if (currentCheatSetting[highlightedCheat] == 0)
-					{
 						//teleport to town
 						gameFunc("toTown");
-					}
+					
 					else if (currentCheatSetting[highlightedCheat] == 1)
-					{
 						//teleport to tails mountain
 						gameFunc("toTail");
-					}
+
 					else if (currentCheatSetting[highlightedCheat] == 2)
-					{
-						//teleport to gold farm
+						//teleport to pirate bay
 						gameFunc("toPirate");
-					}
+
 					else if (currentCheatSetting[highlightedCheat] == 3)
-					{
-						//teleport to ballmer peak
+						//teleport to gold farm
 						gameFunc("toGold");
-					}
+					
 					else if (currentCheatSetting[highlightedCheat] == 4)
-					{
+						//teleport to ballmer peak
 						gameFunc("toBallmer");
-					}
+					
 					else if (currentCheatSetting[highlightedCheat] == 5)
-					{
+						//teleport to unbearable woods
 						gameFunc("toUnbearable");
-					}
+					
 					else if (currentCheatSetting[highlightedCheat] == 6)
-					{
+						//teleport to sewer
 						gameFunc("toSewer");
-					}
+					
 					else if (currentCheatSetting[highlightedCheat] == 7)
-					{
+						//teleport to lost cave
 						gameFunc("toLost");
-					}
 				}
 				// God Mode
 				if (highlightedCheat == 6)
@@ -431,15 +427,21 @@ void DirectxFunctions::RenderDirectX()
 
 					if (currentCheatSetting[highlightedCheat] > 0)
 					{
+						//unlimited mana function hook
 						funcHook("manaOn");
+						//damage increase function hook
 						funcHook("oneHitOn");
+						//health function patch to bypass damage taken by player
 						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x84\x9C\x00\x00\x00", 6);
 
 					}
 					else
 					{
+						//restore original game code for mana
 						funcHook("manaOff");
+						//restore original game code for player damage output
 						funcHook("oneHitOff");
+						//restore original game code to allow player to take damage
 						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x85\x9C\x00\x00\x00", 6);
 
 					}
