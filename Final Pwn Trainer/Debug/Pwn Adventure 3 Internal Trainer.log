@@ -1,6 +1,4 @@
 ﻿  DirectX.cpp
-X:\Pwn Adventure 3 Internal Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
-  functioncalls.cpp
-  Generating Code...
-X:\Pwn Adventure 3 Internal Trainer\DirectX.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
-  Pwn Adventure 3 Internal Trainer.vcxproj -> X:\Pwn Adventure 3 Internal Trainer\Debug\Pwn Adventure 3 Internal Trainer.dll
+X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\DirectX.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+  Pwn Adventure 3 Internal Trainer.vcxproj -> X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Debug\Pwn Adventure 3 Internal Trainer.dll

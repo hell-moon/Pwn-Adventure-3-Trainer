@@ -45,12 +45,12 @@ int highlightedCheat = 0;
 // create an array of wide strings to serve as a list in the menu
 wchar_t cheatMenuEntries[NUMCHEATS][255] =
 {
-	L"Mana     ",
-	L"Health   ",
-	L"Speed    ",
-	L"Jump     ",
-	L"Guns     ",
-	L"Teleport "
+	L"Merlin       ",
+	L"Invincibility",
+	L"Sonic        ",
+	L"Jump         ",
+	L"Gimme Guns   ",
+	L"Teleport     "
 };
 // create an array that stores the number of settings for each cheat
 int numCheatSettings[6] = { 2,2,3,3,2,3 };
@@ -60,12 +60,17 @@ int legendaryMode = 0;
 int lastCommittedSetting = 0;
 int uncommittedChanges = 0;
 
-wchar_t manaOptions[2][255] = {	L"default",	L"infinite" };
-wchar_t healthOptions[2][255] = { L"default", L"working" };
-wchar_t speedOptions[3][255] = { L"default", L"light jog", L"hauling ass" };
-wchar_t jumpOptions[3][255] = {	L"default",	L"big hops", L"bigger hops" };
-wchar_t gunOptions[2][255] = {	L"default",	L"legendary" };
-wchar_t teleOptions[3][255] = { L"pirate_bay", L"tails_mountain", L"hidden_island" };
+wchar_t manaOptions[2][255] = {	L"                  Off",	L"Activated" };
+wchar_t healthOptions[2][255] = { L"                Off", L"Activated" };
+wchar_t speedOptions[3][255] = { L"Normal", L"Fast", L"Gotta go fast" };
+wchar_t jumpOptions[3][255] = {	L"Normal",	L"Big hops", L"Bigger hops" };
+wchar_t gunOptions[2][255] = {	L"Off",	L"Activated" };
+wchar_t teleOptions[3][255] = { L"Pirate Bay", L"Tail Mountains", L"Town" };
+
+// get address of gamelogic.dll
+uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
+// from gamelogic.dll, use offset to get address of player structure
+uintptr_t firstLevelPtr = gameLogicAddr + 0x97D7C;
 
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
@@ -129,6 +134,7 @@ void DirectxFunctions::DirectXInit(HWND hwnd)
 
 void DirectxFunctions::RenderDirectX()
 {
+
 	DirectX.Device->BeginScene();
 	if (GetForegroundWindow() == Target.Window)
 	{
@@ -166,16 +172,16 @@ void DirectxFunctions::RenderDirectX()
 			pos.left = 20;
 			pos.top = 20;
 
+
 			// background, xpos, ypos, width, height
-			Drawing::FilledRect(18, 20, 205, 120, D3DCOLOR_ARGB(5, 255, 0, 0));
+			Drawing::FilledRect(18, 20, 205, 120, D3DCOLOR_ARGB(5, 255, 000, 000));
 			// border, xpos, ypos, width, height 
-			Drawing::BorderedRect(17, 19, 205, 120, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 255, 255));
+			Drawing::BorderedRect(17, 19, 205, 120, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header rectangle, xpos, ypos, width, height
-			Drawing::FilledRect(17, 19, 205, 19, D3DCOLOR_ARGB(255, 255, 255, 255));
+			Drawing::FilledRect(17, 19, 205, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header text
 			DirectX.Font->DrawTextW(NULL, L"Beaver Trainer v1.1", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 			pos.top += 20;
-
 
 			wchar_t swf[255];
 			wchar_t swf2[255];
@@ -184,9 +190,9 @@ void DirectxFunctions::RenderDirectX()
 			{
 				D3DCOLOR color;
 				if (highlightedCheat == i)
-					color = D3DCOLOR_ARGB(225, 15, 250, 15);
+					color = D3DCOLOR_ARGB(255, 255, 125, 000);
 				else
-					color = D3DCOLOR_ARGB(225, 15, 250, 250);
+					color = D3DCOLOR_ARGB(225, 255, 250, 250);
 				swprintf(swf, cheatMenuEntries[i]);
 
 				if (i == 0)
@@ -275,8 +281,6 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
 						currentCheatSetting[highlightedCheat] = 0;
 
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-
 					if (currentCheatSetting[highlightedCheat] > 0)
 					{
 						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
@@ -287,42 +291,33 @@ void DirectxFunctions::RenderDirectX()
 					}
 				}
 
-				// Health Boost
+				// Health Boost Cheat
+				// Hacking Method:  MemPatch / Direct memory write to function that controls player health
 				if (highlightedCheat == 1)
 				{
-					int MAXOPTIONS = 2;
-					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
-
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtr, healthAddr;
-					const int newHealth = 999999;
-					const int defaultHealth = 100;
-					std::vector<unsigned int> healthOffsets = { 0x1c, 0x6c, 0x00 };
-					firstLevelPtr = gameLogicAddr + 0x97D7C;
-					healthAddr = mem::FindDMAAddy(firstLevelPtr, healthOffsets) - 0x40;
 
 					//if (bMenuItems[iSelectedItem] == true)
 					if (currentCheatSetting[highlightedCheat] > 0)
 					{
-						*(int*)healthAddr = newHealth;
+						// overwrites assembly instruction to jump if equal, bypassing health subtract
+						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x84\x9C\x00\x00\x00", 6);
 					}
 					else
 					{
-						*(int*)healthAddr = defaultHealth;
+						// rewrites assembly instruction to jump if not equal, resulting in health subtract
+						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x85\x9C\x00\x00\x00", 6);
 					}
 				}
 
 				// Speed Boost
 				if (highlightedCheat == 2)
 				{
-
-					int MAXOPTIONS = 3;
-					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtr, speedAddr;
+					uintptr_t speedAddr;
 					const float oneSpeed = 1000;
 					const float twoSpeed = 3000;
 					const float defaultSpeed = 200;
@@ -348,12 +343,10 @@ void DirectxFunctions::RenderDirectX()
 				// Jump Boost
 				if (highlightedCheat == 3)
 				{
-					int MAXOPTIONS = 3;
-					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtr, jumpAddr;
+					uintptr_t jumpAddr;
 					const float oneJump = 1800;
 					const float twoJump = 5000;
 					const float defaultJump = 420;
@@ -380,9 +373,6 @@ void DirectxFunctions::RenderDirectX()
 				{
 					if (legendaryMode == 0)
 					{
-
-						uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-						uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
 						uintptr_t getItemByNameFuncOff = 0x1DE20;
 						uintptr_t addItemFuncOff = 0x51BA0;
 
@@ -391,8 +381,8 @@ void DirectxFunctions::RenderDirectX()
 						vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
 
 						//// player pointer
-						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerPointerAddressOffset);
-						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
+						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtr, playerPointerAddressOffset);
+						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtr, playerVftableAddr);
 						// game pointer
 						void* pGame = (void*)(gameLogicAddr + 0x9780);					
 
@@ -470,17 +460,15 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-					uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
 					Teleport = (_Teleport)(gameLogicAddr + teleportFuncOff);
 					vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
-					void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
+					void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtr, playerVftableAddr);
 
 
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						//teleport to hidden island
-						Teleport(pPlayervftable, "CowLevel");
+						Teleport(pPlayervftable, "Town");
 					}
 					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
@@ -501,91 +489,6 @@ void DirectxFunctions::RenderDirectX()
 	DirectX.Device->Clear(0, 0, D3DCLEAR_TARGET, 0, 1.0f, 0);
 }
 
-//Print our pattern scan results if necessary
-void MsgBoxAddy(DWORD addy)
-{
-	char szBuffer[1024];
-	sprintf(szBuffer, "%02x", addy);
-	MessageBox(NULL, szBuffer, "Title", MB_OK);
-}
-
-#pragma region Mid Function Hook/Code cave
-/*Credits to InSaNe on MPGH for the original function*/
-//We make Length at the end optional as most jumps will be 5 or less bytes
-void PlaceJMP(BYTE* Address, DWORD jumpTo, DWORD length = 5)
-{
-	DWORD dwOldProtect, dwBkup, dwRelAddr;
-
-	//give that address read and write permissions and store the old permissions at oldProtection
-	VirtualProtect(Address, length, PAGE_EXECUTE_READWRITE, &dwOldProtect);
-
-	// Calculate the "distance" we're gonna have to jump - the size of the JMP instruction
-	dwRelAddr = (DWORD)(jumpTo - (DWORD)Address) - 5;
-
-	// Write the JMP opcode @ our jump position...
-	*Address = 0xE9;
-
-	// Write the offset to where we're gonna jump
-	//The instruction will then become JMP ff002123 for example
-	*((DWORD*)(Address + 0x1)) = dwRelAddr;
-
-	// Overwrite the rest of the bytes with NOPs
-	//ensuring no instruction is Half overwritten(To prevent any crashes)
-	for (DWORD x = 0x5; x < length; x++)
-		* (Address + x) = 0x90;
-
-	// Restore the default permissions
-	VirtualProtect(Address, length, dwOldProtect, &dwBkup);
-}
-
-#pragma region PATTERN SCANNING
-//Get all module related info, this will include the base DLL. 
-//and the size of the module
-MODULEINFO GetModuleInfo(char* szModule)
-{
-	MODULEINFO modinfo = { 0 };
-	HMODULE hModule = GetModuleHandle(szModule);
-	if (hModule == 0)
-		return modinfo;
-	GetModuleInformation(GetCurrentProcess(), hModule, &modinfo, sizeof(MODULEINFO));
-	return modinfo;
-}
-
-DWORD FindPattern(char* module, char* pattern, char* mask)
-{
-	//Get all module related information
-	MODULEINFO mInfo = GetModuleInfo(module);
-
-	//Assign our base and module size
-	//Having the values right is ESSENTIAL, this makes sure
-	//that we don't scan unwanted memory and leading our game to crash
-	DWORD base = (DWORD)mInfo.lpBaseOfDll;
-
-	DWORD size = (DWORD)mInfo.SizeOfImage;
-
-	//Get length for our mask, this will allow us to loop through our array
-	DWORD patternLength = (DWORD)strlen(mask);
-
-	for (DWORD i = 0; i < size - patternLength; i++)
-	{
-		bool found = true;
-		for (DWORD j = 0; j < patternLength; j++)
-		{
-			//if we have a ? in our mask then we have true by default, 
-			//or if the bytes match then we keep searching until finding it or not
-			found &= mask[j] == '?' || pattern[j] == *(char*)(base + i + j);
-		}
-
-		//found = true, our entire pattern was found
-		//return the memory addy so we can write to it
-		if (found)
-		{
-			return base + i;
-		}
-	}
-
-	return NULL;
-}
 
 overlay_t Overlay;
 target_t Target;
@@ -631,34 +534,6 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 	return 0;
 }
 
-DWORD WINAPI initiateHook(LPVOID param)
-{
-
-	// entityhook as per x32Dbg
-	/*DWORD entityAddy = FindPattern("PwnAdventure3-Win32-Shipping.exe",
-		"\xC7\x47\x00\x00\x00\x00\x00\x85\xF6", "xx?????xx");*/
-
-
-		// entityhook with specifics added
-		/*DWORD entityAddy = FindPattern("PwnAdventure3-Win32-Shipping.exe",
-			"\xC7\x47\x30\x7D\x00\x00\x00\x85\xF6", "xxxxxxxxx");*/
-
-			// entityhook with offsets
-	uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-
-	uintptr_t bearInitPtr, bearHealthLoad = 0;
-	bearInitPtr = gameLogicAddr + 0x6170;
-	bearHealthLoad = bearInitPtr + 0x3E;
-	DWORD entityAddy = (DWORD)bearHealthLoad;
-
-	// need to go back to BearInit + 0x45 when we're done
-
-	// MsgBoxAddy(entityAddy);
-	EntlistJmpBack = entityAddy + 0x7;
-	PlaceJMP((BYTE*)entityAddy, (DWORD)entityhook, 7);
-
-	return NULL;
-}
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
@@ -666,7 +541,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	{
 		hInstance = hModule;
 		CreateThread(0, NULL, ThreadProc, (LPVOID)L"X", NULL, NULL);
-		CreateThread(0, 0, initiateHook, 0, 0, 0);
 	}
 	return TRUE;
 }
