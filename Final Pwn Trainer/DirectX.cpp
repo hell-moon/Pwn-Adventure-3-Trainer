@@ -183,14 +183,16 @@ void DirectxFunctions::RenderDirectX()
 
 
 			// background, xpos, ypos, width, height
-			Drawing::FilledRect(18, 20, 250, 140, D3DCOLOR_ARGB(255, 5, 5, 5));
+			Drawing::FilledRect(18, 20, 250, 161, D3DCOLOR_ARGB(255, 5, 5, 5));
 			// border, xpos, ypos, width, height 
-			Drawing::BorderedRect(17, 19, 250, 140, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
+			Drawing::BorderedRect(17, 19, 250, 161, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header rectangle, xpos, ypos, width, height
 			Drawing::FilledRect(17, 19, 250, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header text
 			DirectX.Font->DrawTextW(NULL, L"Beaver Trainer v1.1", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 			pos.top += 20;
+			// footer rectangle, xpos, ypos, width, height
+			Drawing::FilledRect(17, 161, 250, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 
 			wchar_t swf[255];
 			wchar_t swf2[255];
@@ -222,8 +224,11 @@ void DirectxFunctions::RenderDirectX()
 				wcscat(swf, swf2);
 				DirectX.Font->DrawTextW(NULL, swf, -1, &pos, 0, color);
 
-				pos.top += 16;
+				pos.top += 17;
 			}
+			pos.top += 2.5;
+			// footer text
+			DirectX.Font->DrawTextW(NULL, L"Press END to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 
 			if (bKeys[VK_NUMPAD8])
 			{
