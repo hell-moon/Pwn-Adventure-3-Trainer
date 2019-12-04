@@ -55,8 +55,6 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 // create an array that stores the number of settings for each cheat
 int numCheatSettings[6] = { 2,2,3,3,2,3 };
 
-uintptr_t gameLogicAddr = NULL;
-uintptr_t firstLevelPtrAddr = NULL;
 
 int legendaryMode = 0;
 int lastCommittedSetting = 0;
@@ -469,22 +467,31 @@ void DirectxFunctions::RenderDirectX()
 				// Teleport
 				if (highlightedCheat == 5)
 				{
-					int MAXOPTIONS = 3;
-					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
+					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					//if (currentCheatState[highlightedCheat] == 2)
-					//{
+					uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
+					uintptr_t firstLevelPtrAddr = gameLogicAddr + 0x97D7C;
+					Teleport = (_Teleport)(gameLogicAddr + teleportFuncOff);
+					vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
+					void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtrAddr, playerVftableAddr);
 
-					//}
-					//else if (currentCheatState[highlightedCheat] == 1)
-					//{
 
-					//}
-					//else
-					//{
+					if (currentCheatSetting[highlightedCheat] == 2)
+					{
+						//teleport to hidden island
+						Teleport(pPlayervftable, "CowLevel");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 1)
+					{
+						//teleport to tails mountain
+						Teleport(pPlayervftable, "TailMountains");
 
-					//}
+					}
+					else if (currentCheatSetting[highlightedCheat] == 0)
+					{
+						Teleport(pPlayervftable, "PirateBay");
+					}
 				}
 			}
 		}
