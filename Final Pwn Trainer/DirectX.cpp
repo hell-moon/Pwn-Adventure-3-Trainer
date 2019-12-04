@@ -1,9 +1,9 @@
 #include "DirectX.h"
 #include "framework.h"
 #include "functioncalls.h"
+#include "hooks.h"
 #include "modulemgr.h"
 #include "main.h"
-#include "Hooks_reclass.h"
 #include "pch.h"
 #include "mem.h"
 #include "proc.h"
@@ -13,13 +13,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-
-
 using std::cout;
 using std::endl;
 using std::vector;
-
-
 
 directx_t DirectX;
 ID3DXFont* pFont;
@@ -37,7 +33,7 @@ bool bKeyPrev[255];
 bool menuVisible = true;
 
 // how many cheats does out trainer have?
-#define NUMCHEATS 6
+#define NUMCHEATS 7
 // create an array that has a int flag to denote the state of each cheat
 int currentCheatSetting[NUMCHEATS];
 // which cheat has the player selected?
@@ -50,10 +46,11 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 	L"Sonic        ",
 	L"Jump         ",
 	L"Gimme Guns   ",
-	L"Teleport     "
+	L"Teleport     ",
+	L"God Mode     "
 };
 // create an array that stores the number of settings for each cheat
-int numCheatSettings[6] = { 2,2,3,3,2,3 };
+int numCheatSettings[7] = { 2,2,3,3,2,3,2 };
 
 
 int legendaryMode = 0;
@@ -66,12 +63,7 @@ wchar_t speedOptions[3][255] = { L"Normal", L"Fast", L"Gotta go fast" };
 wchar_t jumpOptions[3][255] = {	L"Normal",	L"Big hops", L"Bigger hops" };
 wchar_t gunOptions[2][255] = {	L"Off",	L"Activated" };
 wchar_t teleOptions[3][255] = { L"Pirate Bay", L"Tail Mountains", L"Town" };
-
-// get address of gamelogic.dll
-uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
-// from gamelogic.dll, use offset to get address of player structure
-uintptr_t firstLevelPtr = gameLogicAddr + 0x97D7C;
-
+wchar_t godOptions[2][255] = { L"Normal", L"Superman" };
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
 {
@@ -134,7 +126,10 @@ void DirectxFunctions::DirectXInit(HWND hwnd)
 
 void DirectxFunctions::RenderDirectX()
 {
-
+	// get address of gamelogic.dll
+	uintptr_t gameLogicAddr = (uintptr_t)GetModuleHandle("GameLogic.dll");
+	// from gamelogic.dll, use offset to get address of player structure
+	uintptr_t firstLevelPtr = gameLogicAddr + 0x97D7C;
 	DirectX.Device->BeginScene();
 	if (GetForegroundWindow() == Target.Window)
 	{
@@ -207,6 +202,8 @@ void DirectxFunctions::RenderDirectX()
 					swprintf(swf2, gunOptions[currentCheatSetting[i]]);
 				else if (i == 5)
 					swprintf(swf2, teleOptions[currentCheatSetting[i]]);
+				else if (i == 6)
+					swprintf(swf2, godOptions[currentCheatSetting[i]]);
 
 				wcscat(swf, swf2);
 				DirectX.Font->DrawTextW(NULL, swf, -1, &pos, 0, color);
@@ -373,78 +370,7 @@ void DirectxFunctions::RenderDirectX()
 				{
 					if (legendaryMode == 0)
 					{
-						uintptr_t getItemByNameFuncOff = 0x1DE20;
-						uintptr_t addItemFuncOff = 0x51BA0;
-
-						// various offsets list
-						vector<unsigned int> playerPointerAddressOffset = { 0x1c, 0x6c };
-						vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
-
-						//// player pointer
-						void* pPlayer = (void*)mem::FindDMAAddy(firstLevelPtr, playerPointerAddressOffset);
-						void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtr, playerVftableAddr);
-						// game pointer
-						void* pGame = (void*)(gameLogicAddr + 0x9780);					
-
-						// create instance of getItemByName function
-						GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
-
-						// create instance of addItem function
-						AddItem = (_AddItem)(gameLogicAddr + addItemFuncOff);
-
-						// hold pointer to item
-						void* pGBF = GetItemByName(pGame, sGreatBallsOfFire);
-						//cout << sGreatBallsOfFire << " address: " << std::hex << pGBF << endl;
-						AddItem(pPlayervftable, pGBF, 1, 0);
-
-						void* pOPFireball = GetItemByName(pGame, sOPFireball);
-						//cout << sOPFireball << " address: " << std::hex << pOPFireball << endl;
-						AddItem(pPlayervftable, pOPFireball, 1, 0);
-
-						void* pROPGun = GetItemByName(pGame, sROPChainGun);
-						//cout << sROPChainGun << " address: " << std::hex << pROPGun << endl;
-						AddItem(pPlayervftable, pROPGun, 1, 0);
-
-						void* pGoldMaster = GetItemByName(pGame, sGoldMaster);
-						//cout << sGoldMaster << " address: " << std::hex << pGoldMaster << endl;
-						AddItem(pPlayervftable, pGoldMaster, 1, 0);
-
-						void* pRemoteExploit = GetItemByName(pGame, sRemoteExploit);
-						//cout << sRemoteExploit << " address: " << std::hex << pRemoteExploit << endl;
-						AddItem(pPlayervftable, pRemoteExploit, 1, 0);
-
-						void* pHeapSpray = GetItemByName(pGame, sHeapSpray);
-						//cout << sHeapSpray << " address: " << std::hex << pHeapSpray << endl;
-						AddItem(pPlayervftable, pHeapSpray, 1, 0);
-
-						void* pHandCannon = GetItemByName(pGame, sHandCannon);
-						//cout << sHandCannon << " address: " << std::hex << pHandCannon << endl;
-						AddItem(pPlayervftable, pHandCannon, 1, 0);
-
-						void* pPistolAmmo = GetItemByName(pGame, sPistolAmmo);
-						//cout << sPistolAmmo << " address: " << std::hex << pPistolAmmo << endl;
-						AddItem(pPlayervftable, pPistolAmmo, 9999, 1);
-
-						void* pShotgunAmmo = GetItemByName(pGame, sShotgunAmmo);
-						//cout << sShotgunAmmo << " address: " << std::hex << pShotgunAmmo << endl;
-						AddItem(pPlayervftable, pShotgunAmmo, 9999, 1);
-
-						void* pRifleAmmo = GetItemByName(pGame, sRifleAmmo);
-						//cout << sRifleAmmo << " address: " << std::hex << pRifleAmmo << endl;
-						AddItem(pPlayervftable, pRifleAmmo, 9999, 1);
-
-						void* pSniperAmmo = GetItemByName(pGame, sSniperAmmo);
-						//cout << sSniperAmmo << " address: " << std::hex << pSniperAmmo << endl;
-						AddItem(pPlayervftable, pSniperAmmo, 9999, 1);
-
-						void* pRevolverAmmo = GetItemByName(pGame, sRevolverAmmo);
-						//cout << sRevolverAmmo << " address: " << std::hex << pRevolverAmmo << endl;
-						AddItem(pPlayervftable, pRevolverAmmo, 9999, 1);
-
-						void* pPwnCoin = GetItemByName(pGame, sPwnCoin);
-						//cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
-						AddItem(pPlayervftable, pPwnCoin, 9999, 1);
-
+						gameFunc("getWeapons");
 						legendaryMode = 1;
 					}
 					else
@@ -460,25 +386,41 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					Teleport = (_Teleport)(gameLogicAddr + teleportFuncOff);
-					vector<unsigned int> playerVftableAddr = { 0x1c, 0x6c, 0x0 };
-					void* pPlayervftable = (void*)mem::FindDMAAddy(firstLevelPtr, playerVftableAddr);
-
-
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						//teleport to hidden island
-						Teleport(pPlayervftable, "Town");
+						//Teleport(pPlayervftable, "Town");
 					}
 					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
 						//teleport to tails mountain
-						Teleport(pPlayervftable, "TailMountains");
+						gameFunc("toPirate");
 
 					}
 					else if (currentCheatSetting[highlightedCheat] == 0)
 					{
-						Teleport(pPlayervftable, "PirateBay");
+						gameFunc("toTails");
+					}
+				}
+				// God Mode
+				if (highlightedCheat == 6)
+				{
+					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
+						currentCheatSetting[highlightedCheat] = 0;
+
+					if (currentCheatSetting[highlightedCheat] > 0)
+					{
+						funcHook("manaOn");
+						funcHook("oneHitOn");
+						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x84\x9C\x00\x00\x00", 6);
+
+					}
+					else
+					{
+						funcHook("manaOff");
+						funcHook("oneHitOff");
+						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x85\x9C\x00\x00\x00", 6);
+
 					}
 				}
 			}
