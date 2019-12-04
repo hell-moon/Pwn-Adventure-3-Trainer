@@ -1,4 +1,23 @@
 ﻿  DirectX.cpp
-X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
-X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\DirectX.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
-  Pwn Adventure 3 Internal Trainer.vcxproj -> X:\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Debug\Pwn Adventure 3 Internal Trainer.dll
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  Drawing.cpp
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\DirectX.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  functioncalls.cpp
+  Functions.cpp
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Drawing.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.cpp(11,131): warning C4474: 'printf' : too many arguments passed for format string
+  hooks.cpp
+  mem.cpp
+  ModuleMgr.cpp
+  Overlay.cpp
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.cpp(11,131): message : placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  pch.cpp
+  proc.cpp
+  Generating Code...
+C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Overlay.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+  LINK : C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Debug\Pwn Adventure 3 Internal Trainer.dll not found or not built by the last incremental link; performing full link
+  Pwn Adventure 3 Internal Trainer.vcxproj -> C:\Users\ColorFX2\Desktop\Pwn-Adventure-3-Trainer\Final Pwn Trainer\Debug\Pwn Adventure 3 Internal Trainer.dll

@@ -153,6 +153,7 @@
     <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="functioncalls.cpp" />
     <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="hooks.cpp" />
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="ModuleMgr.cpp" />
     <ClCompile Include="Overlay.cpp" />
@@ -165,14 +166,13 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="functioncalls.h" />
     <ClInclude Include="Functions.h" />
-    <ClInclude Include="Hooks_reclass.h" />
+    <ClInclude Include="hooks.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="mem.h" />
     <ClInclude Include="ModuleMgr.h" />
     <ClInclude Include="Overlay.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="proc.h" />
-    <ClInclude Include="reclass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
