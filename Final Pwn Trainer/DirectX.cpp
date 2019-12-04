@@ -41,29 +41,28 @@ int highlightedCheat = 0;
 // create an array of wide strings to serve as a list in the menu
 wchar_t cheatMenuEntries[NUMCHEATS][255] =
 {
-	L"Merlin       ",
-	L"Invincibility",
-	L"Sonic        ",
-	L"Jump         ",
-	L"Gimme Guns   ",
-	L"Teleport     ",
-	L"God Mode     "
+	L"Mana           ",
+	L"Health         ",
+	L"Speed          ",
+	L"Jump           ",
+	L"Free Guns      ",
+	L"Teleport       ",
+	L"God Mode       "
 };
 // create an array that stores the number of settings for each cheat
 int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
-
 
 int legendaryMode = 0;
 int lastCommittedSetting = 0;
 int uncommittedChanges = 0;
 
-wchar_t manaOptions[2][255] = {	L"                  Off",	L"Activated" };
-wchar_t healthOptions[2][255] = { L"                Off", L"Activated" };
-wchar_t speedOptions[3][255] = { L"Normal", L"Fast", L"Gotta go fast" };
-wchar_t jumpOptions[3][255] = {	L"Normal",	L"Big hops", L"Bigger hops" };
-wchar_t gunOptions[2][255] = {	L"Off",	L"Activated" };
+wchar_t manaOptions[2][255] = {	L"                  Default", L"Infinite" };
+wchar_t healthOptions[2][255] = { L"                Default", L"Invincible" };
+wchar_t speedOptions[3][255] = { L"                 Default", L"Fast", L"Fastest" };
+wchar_t jumpOptions[3][255] = {	L"                  Default",	L"Higher", L"Highest" };
+wchar_t gunOptions[2][255] = {	L"                      Off",	L"Activated" };
 wchar_t teleOptions[8][255] = { L"Town", L"Tail Mountains", L"Pirate Bay", L"Gold Farm", L"Ballmer Peak", L"Unbearable Woods", L"Sewer", L"Lost Cave" };
-wchar_t godOptions[2][255] = { L"Normal", L"Superman" };
+wchar_t godOptions[2][255] = { L"                       Off", L"Superman" };
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
 {
@@ -169,11 +168,11 @@ void DirectxFunctions::RenderDirectX()
 
 
 			// background, xpos, ypos, width, height
-			Drawing::FilledRect(18, 20, 205, 140, D3DCOLOR_ARGB(255, 5, 5, 5));
+			Drawing::FilledRect(18, 20, 250, 140, D3DCOLOR_ARGB(255, 5, 5, 5));
 			// border, xpos, ypos, width, height 
-			Drawing::BorderedRect(17, 19, 205, 140, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
+			Drawing::BorderedRect(17, 19, 250, 140, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header rectangle, xpos, ypos, width, height
-			Drawing::FilledRect(17, 19, 205, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
+			Drawing::FilledRect(17, 19, 250, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header text
 			DirectX.Font->DrawTextW(NULL, L"Beaver Trainer v1.1", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 			pos.top += 20;
@@ -398,7 +397,7 @@ void DirectxFunctions::RenderDirectX()
 					else if (currentCheatSetting[highlightedCheat] == 2)
 						//teleport to pirate bay
 						gameFunc("toPirate");
-
+					
 					else if (currentCheatSetting[highlightedCheat] == 3)
 						//teleport to gold farm
 						gameFunc("toGold");
