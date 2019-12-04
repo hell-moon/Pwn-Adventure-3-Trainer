@@ -77,7 +77,7 @@ wchar_t teleOptions[8][255] =   { L"                         Town",
 								  L"                       Sewer", 
 								  L"                  Lost Cave" };
 wchar_t godOptions[2][255] =    { L"                         Off", 
-								  L"              Superman" };
+								  L"                          On" };
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
 {
