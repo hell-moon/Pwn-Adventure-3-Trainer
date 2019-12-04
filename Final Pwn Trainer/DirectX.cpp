@@ -169,9 +169,9 @@ void DirectxFunctions::RenderDirectX()
 
 
 			// background, xpos, ypos, width, height
-			Drawing::FilledRect(18, 20, 205, 120, D3DCOLOR_ARGB(5, 255, 000, 000));
+			Drawing::FilledRect(18, 20, 205, 140, D3DCOLOR_ARGB(150, 000, 000, 000));
 			// border, xpos, ypos, width, height 
-			Drawing::BorderedRect(17, 19, 205, 120, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
+			Drawing::BorderedRect(17, 19, 205, 140, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header rectangle, xpos, ypos, width, height
 			Drawing::FilledRect(17, 19, 205, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header text
