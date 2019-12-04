@@ -50,7 +50,7 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 	L"God Mode     "
 };
 // create an array that stores the number of settings for each cheat
-int numCheatSettings[7] = { 2,2,3,3,2,3,2 };
+int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
 
 
 int legendaryMode = 0;
@@ -62,7 +62,7 @@ wchar_t healthOptions[2][255] = { L"                Off", L"Activated" };
 wchar_t speedOptions[3][255] = { L"Normal", L"Fast", L"Gotta go fast" };
 wchar_t jumpOptions[3][255] = {	L"Normal",	L"Big hops", L"Bigger hops" };
 wchar_t gunOptions[2][255] = {	L"Off",	L"Activated" };
-wchar_t teleOptions[3][255] = { L"Pirate Bay", L"Tail Mountains", L"Town" };
+wchar_t teleOptions[8][255] = { L"Town", L"Tail Mountains", L"Pirate Bay", L"Gold Farm", L"Ballmer Peak", L"Unbearable Woods", L"Sewer", L"Lost Cave" };
 wchar_t godOptions[2][255] = { L"Normal", L"Superman" };
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
@@ -169,7 +169,7 @@ void DirectxFunctions::RenderDirectX()
 
 
 			// background, xpos, ypos, width, height
-			Drawing::FilledRect(18, 20, 205, 140, D3DCOLOR_ARGB(150, 000, 000, 000));
+			Drawing::FilledRect(18, 20, 205, 140, D3DCOLOR_ARGB(255, 5, 5, 5));
 			// border, xpos, ypos, width, height 
 			Drawing::BorderedRect(17, 19, 205, 140, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header rectangle, xpos, ypos, width, height
@@ -386,20 +386,41 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
-					if (currentCheatSetting[highlightedCheat] == 2)
+					if (currentCheatSetting[highlightedCheat] == 0)
 					{
-						//teleport to hidden island
-						//Teleport(pPlayervftable, "Town");
+						//teleport to town
+						gameFunc("toTown");
 					}
 					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
 						//teleport to tails mountain
-						gameFunc("toPirate");
-
+						gameFunc("toTail");
 					}
-					else if (currentCheatSetting[highlightedCheat] == 0)
+					else if (currentCheatSetting[highlightedCheat] == 2)
 					{
-						gameFunc("toTails");
+						//teleport to gold farm
+						gameFunc("toPirate");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 3)
+					{
+						//teleport to ballmer peak
+						gameFunc("toGold");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 4)
+					{
+						gameFunc("toBallmer");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 5)
+					{
+						gameFunc("toUnbearable");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 6)
+					{
+						gameFunc("toSewer");
+					}
+					else if (currentCheatSetting[highlightedCheat] == 7)
+					{
+						gameFunc("toLost");
 					}
 				}
 				// God Mode

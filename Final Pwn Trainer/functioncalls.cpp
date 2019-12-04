@@ -129,10 +129,28 @@ void gameFunc(const char* funcName){
         //cout << sPwnCoin << " address: " << std::hex << pPwnCoin << endl;
         AddItem(pPlayervftable, pPwnCoin, 9999, 1);
     }
-    if (funcName == "toTails"){
+    if (funcName == "toTown"){
+        Teleport(pPlayervftable, "Town");
+    }
+    if (funcName == "toTail"){
         Teleport(pPlayervftable, "TailMountains");
     }
-    if (funcName == "toPirate"){
-        Teleport(pPlayervftable, "PirateBay");
-    }
+	if (funcName == "toPirate") {
+		Teleport(pPlayervftable, "PirateBay");
+	}
+	if (funcName == "toGold") {
+		Teleport(pPlayervftable, "GoldFarm");
+	}
+	if (funcName == "toBallmer") {
+		Teleport(pPlayervftable, "BallmerPeak");
+	}
+	if (funcName == "toUnbearable") {
+		Teleport(pPlayervftable, "UnbearableWoods");
+	}
+	if (funcName == "toSewer") {
+		Teleport(pPlayervftable, "Sewer");
+	}
+	if (funcName == "toLost") {
+		Teleport(pPlayervftable, "LostCave");
+	}
 }
