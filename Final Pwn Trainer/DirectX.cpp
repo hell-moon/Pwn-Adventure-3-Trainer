@@ -41,13 +41,13 @@ int highlightedCheat = 0;
 // create an array of wide strings to serve as a list in the menu
 wchar_t cheatMenuEntries[NUMCHEATS][255] =
 {
-	L"Mana           ",
-	L"Health         ",
-	L"Speed          ",
-	L"Jump           ",
-	L"Free Guns      ",
-	L"Teleport       ",
-	L"God Mode       "
+	L"Mana      ",
+	L"Health    ",
+	L"Speed     ",
+	L"Jump      ",
+	L"Free Guns ",
+	L"Teleport  ",
+	L"God Mode  "
 };
 // create an array that stores the number of settings for each cheat
 int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
@@ -56,13 +56,28 @@ int legendaryMode = 0;
 int lastCommittedSetting = 0;
 int uncommittedChanges = 0;
 
-wchar_t manaOptions[2][255] = {	L"                  Default", L"Infinite" };
-wchar_t healthOptions[2][255] = { L"                Default", L"Invincible" };
-wchar_t speedOptions[3][255] = { L"                 Default", L"Fast", L"Fastest" };
-wchar_t jumpOptions[3][255] = {	L"                  Default",	L"Higher", L"Highest" };
-wchar_t gunOptions[2][255] = {	L"                      Off",	L"Activated" };
-wchar_t teleOptions[8][255] = { L"Town", L"Tail Mountains", L"Pirate Bay", L"Gold Farm", L"Ballmer Peak", L"Unbearable Woods", L"Sewer", L"Lost Cave" };
-wchar_t godOptions[2][255] = { L"                       Off", L"Superman" };
+wchar_t manaOptions[2][255] =   { L"                      Default", 
+								  L"                       Infinite" };
+wchar_t healthOptions[2][255] = { L"                      Default", 
+                                  L"                   Invincible" };
+wchar_t speedOptions[3][255] =  { L"                     Default", 
+								  L"                          Fast", 
+								  L"                     Fastest" };
+wchar_t jumpOptions[3][255] =   { L"                      Default",	
+								  L"                       Higher", 
+							      L"                     Highest" };
+wchar_t gunOptions[2][255] =    { L"                          No",	
+								  L"                         Yes" };
+wchar_t teleOptions[8][255] =   { L"                         Town", 
+								  L"           Tail Mountains", 
+								  L"                 Pirate Bay", 
+								  L"                 Gold Farm", 
+								  L"             Ballmer Peak", 
+				                  L"    Unbearable Woods", 
+								  L"                       Sewer", 
+								  L"                  Lost Cave" };
+wchar_t godOptions[2][255] =    { L"                         Off", 
+								  L"              Superman" };
 
 void DrawString(char* String, int x, int y, int a, int r, int g, int b, ID3DXFont* font)
 {
