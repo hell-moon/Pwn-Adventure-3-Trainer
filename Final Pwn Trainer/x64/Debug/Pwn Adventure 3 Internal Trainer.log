@@ -1,0 +1,29 @@
+﻿  DirectX.cpp
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::ReadMemory(DWORD)'
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::WriteMemory(DWORD)'
+  Drawing.cpp
+X:\Pwn Adventure 3 Internal Trainer\DirectX.h(9,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::ReadMemory(DWORD)'
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::WriteMemory(DWORD)'
+  functioncalls.cpp
+X:\Pwn Adventure 3 Internal Trainer\DirectX.h(9,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+X:\Pwn Adventure 3 Internal Trainer\functioncalls.cpp(5,60): error C2664: 'HMODULE GetModuleHandleW(LPCWSTR)': cannot convert argument 1 from 'const char [14]' to 'LPCWSTR'
+X:\Pwn Adventure 3 Internal Trainer\functioncalls.cpp(5,45): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+  Functions.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\libloaderapi.h(269,1): message : see declaration of 'GetModuleHandleW'
+  mem.cpp
+  ModuleMgr.cpp
+  Overlay.cpp
+X:\Pwn Adventure 3 Internal Trainer\DirectX.h(9,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(36,20): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::ReadMemory(DWORD)'
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): error C3861: 'pHandle': identifier not found
+X:\Pwn Adventure 3 Internal Trainer\Functions.h(44,21): message : This diagnostic occurred in the compiler generated function 'TypeValue ProcessFunctions::WriteMemory(DWORD)'
+  pch.cpp
+  proc.cpp
+  Generating Code...
+X:\Pwn Adventure 3 Internal Trainer\DirectX.h(9,10): fatal error C1083: Cannot open include file: 'd3dx9.h': No such file or directory
