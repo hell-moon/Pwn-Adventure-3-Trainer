@@ -53,6 +53,7 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
 
 int legendaryMode = 0;
+int godFlag = 0;
 int lastCommittedSetting = 0;
 int uncommittedChanges = 0;
 
@@ -264,17 +265,23 @@ void DirectxFunctions::RenderDirectX()
 				// Hacking Method:  MemPatch / Direct memory write to function that controls player mana
 				if (highlightedCheat == 0)
 				{
-					int MAXOPTIONS = 2;
-					if (currentCheatSetting[highlightedCheat] == MAXOPTIONS)
-						currentCheatSetting[highlightedCheat] = 0;
-
-					if (currentCheatSetting[highlightedCheat] > 0)
+					if (godFlag == 0)
 					{
-						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
+						if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
+							currentCheatSetting[highlightedCheat] = 0;
+
+						if (currentCheatSetting[highlightedCheat] > 0)
+						{
+							mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
+						}
+						else
+						{
+							mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x2B\xC2", 2);
+						}
 					}
 					else
 					{
-						mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x2B\xC2", 2);
+						currentCheatSetting[highlightedCheat] = 0;
 					}
 				}
 
@@ -282,19 +289,26 @@ void DirectxFunctions::RenderDirectX()
 				// Hacking Method:  MemPatch / Direct memory write to function that controls player health
 				if (highlightedCheat == 1)
 				{
-					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
-						currentCheatSetting[highlightedCheat] = 0;
-
-					//if (bMenuItems[iSelectedItem] == true)
-					if (currentCheatSetting[highlightedCheat] > 0)
+					if (godFlag == 0)
 					{
-						// overwrites assembly instruction to jump if equal, bypassing health subtract
-						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x84\x9C\x00\x00\x00", 6);
+						if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
+							currentCheatSetting[highlightedCheat] = 0;
+
+						//if (bMenuItems[iSelectedItem] == true)
+						if (currentCheatSetting[highlightedCheat] > 0)
+						{
+							// overwrites assembly instruction to jump if equal, bypassing health subtract
+							mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x84\x9C\x00\x00\x00", 6);
+						}
+						else
+						{
+							// rewrites assembly instruction to jump if not equal, resulting in health subtract
+							mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x85\x9C\x00\x00\x00", 6);
+						}
 					}
 					else
 					{
-						// rewrites assembly instruction to jump if not equal, resulting in health subtract
-						mem::Patch((BYTE*)(gameLogicAddr + 0x51176), (BYTE*)"\x0F\x85\x9C\x00\x00\x00", 6);
+						currentCheatSetting[highlightedCheat] = 0;
 					}
 				}
 
@@ -319,7 +333,6 @@ void DirectxFunctions::RenderDirectX()
 					else if (currentCheatSetting[highlightedCheat] == 1)
 					{
 						*(float*)speedAddr = oneSpeed;
-
 					}
 					else
 					{
@@ -358,10 +371,14 @@ void DirectxFunctions::RenderDirectX()
 				// Give Legendary Items
 				if (highlightedCheat == 4)
 				{
-					if (legendaryMode == 0)
+					if (legendaryMode == 0 && currentCheatSetting[highlightedCheat] == 1)
 					{
 						gameFunc("getWeapons");
 						legendaryMode = 1;
+					}
+					else if (legendaryMode == 0)
+					{
+						currentCheatSetting[highlightedCheat] = 0;
 					}
 					else
 					{
@@ -416,6 +433,10 @@ void DirectxFunctions::RenderDirectX()
 
 					if (currentCheatSetting[highlightedCheat] > 0)
 					{
+						godFlag = 1;
+						// turn off heatlth and mana cheat
+						currentCheatSetting[0] = 0;
+						currentCheatSetting[1] = 0;
 						//unlimited mana function hook
 						funcHook("manaOn");
 						//damage increase function hook
@@ -426,6 +447,7 @@ void DirectxFunctions::RenderDirectX()
 					}
 					else
 					{
+						godFlag = 0;
 						//restore original game code for mana
 						funcHook("manaOff");
 						//restore original game code for player damage output
