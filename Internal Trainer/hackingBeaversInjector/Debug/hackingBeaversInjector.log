@@ -1,0 +1,4 @@
+﻿  Source.cpp
+E:\Misc\Pwn Adventure 3 Trainer\Internal Trainer\hackingBeaversInjector\Source.cpp(46,10): warning C4101: 'hLib': unreferenced local variable
+Source.obj : error LNK2019: unresolved external symbol __imp__StrStrIA@8 referenced in function "unsigned long __cdecl GetTargetThreadIDFromProcName(char const *)" (?GetTargetThreadIDFromProcName@@YAKPBD@Z)
+E:\Misc\Pwn Adventure 3 Trainer\Internal Trainer\hackingBeaversInjector\Debug\hackingBeaversInjector.exe : fatal error LNK1120: 1 unresolved externals
