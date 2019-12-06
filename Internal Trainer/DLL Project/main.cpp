@@ -33,7 +33,7 @@ bool bKeyPrev[255];
 bool menuVisible = true;
 
 // how many cheats does out trainer have?
-#define NUMCHEATS 7
+#define NUMCHEATS 6
 // create an array that has a int flag to denote the state of each cheat
 int currentCheatSetting[NUMCHEATS];
 // which cheat has the player selected?
@@ -46,11 +46,12 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 	L"Speed     ",
 	L"Jump      ",
 	L"Guns      ",
-	L"Teleport  ",
+	//L"Teleport  ",
 	L"God Mode  "
 };
 // create an array that stores the number of settings for each cheat
-int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
+//int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
+int numCheatSettings[NUMCHEATS] = { 2,2,3,3,2,2 };
 
 int legendaryMode = 0;
 int godFlag = 0;
@@ -62,21 +63,21 @@ wchar_t manaOptions[2][255] =   { L"                      Default",
 wchar_t healthOptions[2][255] = { L"                      Default", 
                                   L"                   Invincible" };
 wchar_t speedOptions[3][255] =  { L"                     Default", 
-								  L"                        Faster", 
+								  L"                       Faster", 
 								  L"                     Fastest" };
 wchar_t jumpOptions[3][255] =   { L"                      Default",	
 								  L"                       Higher", 
 							      L"                     Highest" };
 wchar_t gunOptions[2][255] =    { L"                            Off",	
 								  L"                 Legendary" };
-wchar_t teleOptions[8][255] =   { L"                         Town", 
-								  L"           Tail Mountains", 
-								  L"                 Pirate Bay", 
-								  L"                 Gold Farm", 
-								  L"             Ballmer Peak", 
-				                  L"    Unbearable Woods", 
-								  L"                       Sewer", 
-								  L"                  Lost Cave" };
+//wchar_t teleOptions[8][255] =   { L"                         Town", 
+//								  L"           Tail Mountains", 
+//								  L"                 Pirate Bay", 
+//								  L"                 Gold Farm", 
+//								  L"             Ballmer Peak", 
+//				                  L"    Unbearable Woods", 
+//								  L"                       Sewer", 
+//								  L"                  Lost Cave" };
 wchar_t godOptions[2][255] =    { L"                         Off", 
 								  L"                         On" };
 
@@ -165,8 +166,8 @@ void DirectxFunctions::RenderDirectX()
 			// footer rectangle, xpos, ypos, width, height
 			Drawing::FilledRect(17, 161, 250, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 
-			wchar_t swf[255];
-			wchar_t swf2[255];
+			wchar_t cheatName[255];
+			wchar_t cheatSetting[255];
 
 			for (int i = 0; i < NUMCHEATS; i++)
 			{
@@ -175,31 +176,31 @@ void DirectxFunctions::RenderDirectX()
 					color = D3DCOLOR_ARGB(255, 255, 125, 000);
 				else
 					color = D3DCOLOR_ARGB(225, 255, 250, 250);
-				swprintf(swf, cheatMenuEntries[i]);
+				swprintf(cheatName, cheatMenuEntries[i]);
 
 				if (i == 0)
-					swprintf(swf2, manaOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, manaOptions[currentCheatSetting[i]]);
 				else if (i == 1)
-					swprintf(swf2, healthOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, healthOptions[currentCheatSetting[i]]);
 				else if (i == 2)
-					swprintf(swf2, speedOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, speedOptions[currentCheatSetting[i]]);
 				else if (i == 3)
-					swprintf(swf2, jumpOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, jumpOptions[currentCheatSetting[i]]);
 				else if (i == 4)
-					swprintf(swf2, gunOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, gunOptions[currentCheatSetting[i]]);
+				//else if (i == 5)
+				//	swprintf(swf2, teleOptions[currentCheatSetting[i]]);
 				else if (i == 5)
-					swprintf(swf2, teleOptions[currentCheatSetting[i]]);
-				else if (i == 6)
-					swprintf(swf2, godOptions[currentCheatSetting[i]]);
+					swprintf(cheatSetting, godOptions[currentCheatSetting[i]]);
 
-				wcscat(swf, swf2);
-				DirectX.Font->DrawTextW(NULL, swf, -1, &pos, 0, color);
+				wcscat(cheatName, cheatSetting);
+				DirectX.Font->DrawTextW(NULL, cheatName, -1, &pos, 0, color);
 
 				pos.top += 17;
 			}
-			pos.top += 2.5;
+			pos.top += 3.5;
 			// footer text
-			DirectX.Font->DrawTextW(NULL, L"Press END to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
+			DirectX.Font->DrawTextW(NULL, L"Press SUBTRACT to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 
 			if (bKeys[VK_NUMPAD8])
 			{
@@ -388,45 +389,45 @@ void DirectxFunctions::RenderDirectX()
 				}
 
 				// Teleport
-				if (highlightedCheat == 5)
-				{
-					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
-						currentCheatSetting[highlightedCheat] = 0;
+				//if (highlightedCheat == 5)
+				//{
+				//	if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
+				//		currentCheatSetting[highlightedCheat] = 0;
 
-					if (currentCheatSetting[highlightedCheat] == 0)
-						//teleport to town
-						gameFunc("toTown");
-					
-					else if (currentCheatSetting[highlightedCheat] == 1)
-						//teleport to tails mountain
-						gameFunc("toTail");
+				//	if (currentCheatSetting[highlightedCheat] == 0)
+				//		//teleport to town
+				//		gameFunc("toTown");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 1)
+				//		//teleport to tails mountain
+				//		gameFunc("toTail");
 
-					else if (currentCheatSetting[highlightedCheat] == 2)
-						//teleport to pirate bay
-						gameFunc("toPirate");
-					
-					else if (currentCheatSetting[highlightedCheat] == 3)
-						//teleport to gold farm
-						gameFunc("toGold");
-					
-					else if (currentCheatSetting[highlightedCheat] == 4)
-						//teleport to ballmer peak
-						gameFunc("toBallmer");
-					
-					else if (currentCheatSetting[highlightedCheat] == 5)
-						//teleport to unbearable woods
-						gameFunc("toUnbearable");
-					
-					else if (currentCheatSetting[highlightedCheat] == 6)
-						//teleport to sewer
-						gameFunc("toSewer");
-					
-					else if (currentCheatSetting[highlightedCheat] == 7)
-						//teleport to lost cave
-						gameFunc("toLost");
-				}
+				//	else if (currentCheatSetting[highlightedCheat] == 2)
+				//		//teleport to pirate bay
+				//		gameFunc("toPirate");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 3)
+				//		//teleport to gold farm
+				//		gameFunc("toGold");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 4)
+				//		//teleport to ballmer peak
+				//		gameFunc("toBallmer");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 5)
+				//		//teleport to unbearable woods
+				//		gameFunc("toUnbearable");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 6)
+				//		//teleport to sewer
+				//		gameFunc("toSewer");
+				//	
+				//	else if (currentCheatSetting[highlightedCheat] == 7)
+				//		//teleport to lost cave
+				//		gameFunc("toLost");
+				//}
 				// God Mode
-				if (highlightedCheat == 6)
+				if (highlightedCheat == 5)
 				{
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
