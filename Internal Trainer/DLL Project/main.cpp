@@ -198,9 +198,9 @@ void DirectxFunctions::RenderDirectX()
 
 				pos.top += 17;
 			}
-			pos.top += 3.5;
+			pos.top += 19.5;
 			// footer text
-			DirectX.Font->DrawTextW(NULL, L"Press SUBTRACT to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
+			DirectX.Font->DrawTextW(NULL, L"Press NUMPAD- to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 
 			if (bKeys[VK_NUMPAD8])
 			{
