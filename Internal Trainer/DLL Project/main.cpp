@@ -17,6 +17,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
+// initiate variables for the menu
 directx_t DirectX;
 ID3DXFont* pFont;
 LPD3DXFONT font_interface = NULL;
@@ -25,11 +26,13 @@ IDirect3DDevice9Ex* p_Device = 0;
 D3DPRESENT_PARAMETERS p_Params;
 RECT rc;
 
-bool bInitialized = false;
+//bool bInitialized = false;
 
+// determine the state of keys when the trainer is launched
 bool bKeys[255];
 bool bKeyPrev[255];
 
+// is the menu hidden or visible?
 bool menuVisible = true;
 
 // how many cheats does out trainer have?
@@ -50,25 +53,29 @@ wchar_t cheatMenuEntries[NUMCHEATS][255] =
 	L"God Mode  "
 };
 // create an array that stores the number of settings for each cheat
-//int numCheatSettings[7] = { 2,2,3,3,2,8,2 };
 int numCheatSettings[NUMCHEATS] = { 2,2,3,3,2,2 };
 
+// has the legendary weapons cheat been used?
 int legendaryMode = 0;
+// is the god mode cheat on?
 int godFlag = 0;
+// store the currently committed setting in the cheat options
 int lastCommittedSetting = 0;
+// are there uncommitted changes in the menu?
 int uncommittedChanges = 0;
 
-wchar_t manaOptions[2][255] =   { L"                      Default", 
+// strings for the cheats 
+wchar_t manaOptions[2][255] = { L"                      Default",
 								  L"                       Infinite" };
-wchar_t healthOptions[2][255] = { L"                      Default", 
-                                  L"                   Invincible" };
-wchar_t speedOptions[3][255] =  { L"                     Default", 
-								  L"                       Faster", 
+wchar_t healthOptions[2][255] = { L"                      Default",
+								  L"                   Invincible" };
+wchar_t speedOptions[3][255] = { L"                     Default",
+								  L"                       Faster",
 								  L"                     Fastest" };
-wchar_t jumpOptions[3][255] =   { L"                      Default",	
-								  L"                       Higher", 
-							      L"                     Highest" };
-wchar_t gunOptions[2][255] =    { L"                            Off",	
+wchar_t jumpOptions[3][255] = { L"                      Default",
+								  L"                       Higher",
+								  L"                     Highest" };
+wchar_t gunOptions[2][255] = { L"                            Off",
 								  L"                 Legendary" };
 //wchar_t teleOptions[8][255] =   { L"                         Town", 
 //								  L"           Tail Mountains", 
@@ -78,15 +85,18 @@ wchar_t gunOptions[2][255] =    { L"                            Off",
 //				                  L"    Unbearable Woods", 
 //								  L"                       Sewer", 
 //								  L"                  Lost Cave" };
-wchar_t godOptions[2][255] =    { L"                         Off", 
+wchar_t godOptions[2][255] = { L"                         Off",
 								  L"                         On" };
 
 
+// initialize DirectX settings
 void DirectxFunctions::DirectXInit(HWND hwnd)
 {
+	// did the Direct3DCreate9 object get created?
 	if (FAILED(Direct3DCreate9Ex(D3D_SDK_VERSION, &DirectX.Object)))
 		exit(1);
 
+	// our cheat menu will run in a small window
 	ZeroMemory(&DirectX.Param, sizeof(DirectX.Param));
 	DirectX.Param.Windowed = true;
 	DirectX.Param.BackBufferFormat = D3DFMT_A8R8G8B8;
@@ -97,14 +107,13 @@ void DirectxFunctions::DirectXInit(HWND hwnd)
 	DirectX.Param.MultiSampleQuality = D3DMULTISAMPLE_NONE;
 	DirectX.Param.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-
+	// were the objects created?
 	if (FAILED(DirectX.Object->CreateDeviceEx(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &DirectX.Param, 0, &DirectX.Device)))
 		exit(1);
 
-
+	// set up text settings
 	D3DXCreateFont(DirectX.Device, 20, 0, FW_BOLD, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial", &DirectX.Font);
 	D3DXCreateFont(DirectX.Device, 13, 0, 0, 0, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Arial", &DirectX.espFont);
-
 	if (!DirectX.Line)
 		D3DXCreateLine(DirectX.Device, &DirectX.Line);
 }
@@ -117,6 +126,8 @@ void DirectxFunctions::RenderDirectX()
 	// from gamelogic.dll, use offset to get address of player structure
 	uintptr_t firstLevelPtr = gameLogicAddr + 0x97D7C;
 	DirectX.Device->BeginScene();
+	
+	// make sure any pressed keys at time of launch don't interfere with the menu
 	if (GetForegroundWindow() == Target.Window)
 	{
 		for (int i = 0; i < 255; i++)
@@ -139,26 +150,29 @@ void DirectxFunctions::RenderDirectX()
 				bKeyPrev[i] = false;
 			}
 		}
+
+		// pressing subtract toggles menu visibility 
 		if (bKeys[VK_SUBTRACT])
 		{
 			menuVisible = !menuVisible;
 		}
 
+		// if the menu is visible, draw it
 		if (menuVisible)
 		{
+			// position the menu
 			RECT pos;
 			pos.right = 1001;
 			pos.bottom = 1001;
-
 			pos.left = 20;
 			pos.top = 20;
 
 
-			// background, xpos, ypos, width, height
+			// background, xpos, ypos, width, height, color
 			Drawing::FilledRect(18, 20, 250, 161, D3DCOLOR_ARGB(255, 5, 5, 5));
-			// border, xpos, ypos, width, height 
+			// border, xpos, ypos, width, height, color
 			Drawing::BorderedRect(17, 19, 250, 161, 1, 1, 1, 1, D3DCOLOR_ARGB(255, 255, 125, 000));
-			// header rectangle, xpos, ypos, width, height
+			// header rectangle, xpos, ypos, width, height, color
 			Drawing::FilledRect(17, 19, 250, 19, D3DCOLOR_ARGB(255, 255, 125, 000));
 			// header text
 			DirectX.Font->DrawTextW(NULL, L"Beaver Trainer v1.1", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
@@ -169,6 +183,7 @@ void DirectxFunctions::RenderDirectX()
 			wchar_t cheatName[255];
 			wchar_t cheatSetting[255];
 
+			// fill the menu with text
 			for (int i = 0; i < NUMCHEATS; i++)
 			{
 				D3DCOLOR color;
@@ -178,6 +193,8 @@ void DirectxFunctions::RenderDirectX()
 					color = D3DCOLOR_ARGB(225, 255, 250, 250);
 				swprintf(cheatName, cheatMenuEntries[i]);
 
+
+				// concatenate the cheat name and the current setting
 				if (i == 0)
 					swprintf(cheatSetting, manaOptions[currentCheatSetting[i]]);
 				else if (i == 1)
@@ -193,15 +210,16 @@ void DirectxFunctions::RenderDirectX()
 				else if (i == 5)
 					swprintf(cheatSetting, godOptions[currentCheatSetting[i]]);
 
+				// print it to the menu
 				wcscat(cheatName, cheatSetting);
 				DirectX.Font->DrawTextW(NULL, cheatName, -1, &pos, 0, color);
-
 				pos.top += 17;
 			}
 			pos.top += 19.5;
 			// footer text
 			DirectX.Font->DrawTextW(NULL, L"Press NUMPAD- to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 
+			// move up
 			if (bKeys[VK_NUMPAD8])
 			{
 				// overwrite any uncommitted change
@@ -210,11 +228,13 @@ void DirectxFunctions::RenderDirectX()
 					currentCheatSetting[highlightedCheat] = lastCommittedSetting;
 					uncommittedChanges = 0;
 				}
+				// move highlight
 				if (highlightedCheat > 0)
 				{
 					highlightedCheat--;
 				}
 			}
+			// move down
 			if (bKeys[VK_NUMPAD2])
 			{
 				// overwrite any uncommitted change
@@ -223,13 +243,16 @@ void DirectxFunctions::RenderDirectX()
 					currentCheatSetting[highlightedCheat] = lastCommittedSetting;
 					uncommittedChanges = 0;
 				}
+				// move highlight
 				if (highlightedCheat < NUMCHEATS - 1)
 				{
 					highlightedCheat++;
 				}
 			}
+			// get previous setting
 			if (bKeys[VK_NUMPAD4])
 			{
+				// store the last committed setting
 				if (uncommittedChanges == 0)
 				{
 					lastCommittedSetting = currentCheatSetting[highlightedCheat];
@@ -240,22 +263,21 @@ void DirectxFunctions::RenderDirectX()
 					currentCheatSetting[highlightedCheat]--;
 	
 			}
+			// get next setting
 			if (bKeys[VK_NUMPAD6])
 			{
-				// store a the last committed change if this is the first time the user tries to browse optons
+				// store a the last committed setting
 				if (uncommittedChanges == 0)
 				{
 					lastCommittedSetting = currentCheatSetting[highlightedCheat];
 					uncommittedChanges = 1;
 				}
-				// check to see that temp is different
 				// peak right
 				if ( currentCheatSetting[highlightedCheat] < numCheatSettings[highlightedCheat] - 1)
 					currentCheatSetting[highlightedCheat]++;
 
 			}
-
-
+			// commit selected change
 			if (bKeys[VK_NUMPAD0])
 			{
 				// commit any changes
@@ -266,11 +288,13 @@ void DirectxFunctions::RenderDirectX()
 				// Hacking Method:  MemPatch / Direct memory write to function that controls player mana
 				if (highlightedCheat == 0)
 				{
+					// don't alter health if god mode is on
 					if (godFlag == 0)
 					{
 						if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 							currentCheatSetting[highlightedCheat] = 0;
 
+						// no-op the subtract command if the cheat is on, otherwise use default settings
 						if (currentCheatSetting[highlightedCheat] > 0)
 						{
 							mem::Patch((BYTE*)(gameLogicAddr + 0x525C5), (BYTE*)"\x90\x090", 2);
@@ -319,14 +343,18 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
+					// initialize speed values
 					uintptr_t speedAddr;
 					const float oneSpeed = 1000;
 					const float twoSpeed = 3000;
 					const float defaultSpeed = 200;
+
+					// locate the address containing speed
 					std::vector<unsigned int> speedOffsets = { 0x1c, 0x6c, 0x120 };
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					speedAddr = mem::FindDMAAddy(firstLevelPtr, speedOffsets);
 
+					// alter the value depending on the user's selection
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						*(float*)speedAddr = twoSpeed;
@@ -347,14 +375,19 @@ void DirectxFunctions::RenderDirectX()
 					if (currentCheatSetting[highlightedCheat] == numCheatSettings[highlightedCheat])
 						currentCheatSetting[highlightedCheat] = 0;
 
+					// initialize jump values
 					uintptr_t jumpAddr;
 					const float oneJump = 1800;
 					const float twoJump = 5000;
 					const float defaultJump = 420;
+
+					// locate address containing jump
 					std::vector<unsigned int> jumpOffsets = { 0x1c, 0x6c, 0x124 };
 					firstLevelPtr = gameLogicAddr + 0x97D7C;
 					jumpAddr = mem::FindDMAAddy(firstLevelPtr, jumpOffsets);
 
+
+					// alter the value depending on the user's selection
 					if (currentCheatSetting[highlightedCheat] == 2)
 					{
 						*(float*)jumpAddr = twoJump;
@@ -372,6 +405,7 @@ void DirectxFunctions::RenderDirectX()
 				// Give Legendary Items
 				if (highlightedCheat == 4)
 				{
+					// only run this if the user doesn't already have the weapons
 					if (legendaryMode == 0 && currentCheatSetting[highlightedCheat] == 1)
 					{
 						gameFunc("getWeapons");
@@ -511,7 +545,7 @@ DWORD WINAPI ThreadProc(LPVOID lpParam)
 	return 0;
 }
 
-
+// built in windows function, this program will create a DLL
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	if (ul_reason_for_call == DLL_PROCESS_ATTACH)
