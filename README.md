@@ -25,6 +25,8 @@ disabled while using this program, or exclude the injector from anti-virus scans
 
 Using the Trainer:
 
+![Image of In-Game Menu](https://imgur.com/a/WuzeUis)
+
 Once the exe is run, a menu will appear within the upper left corner of the screen,
 The user is able to use the directional arrows on the NUMPAD to navigate the menu:
 - Up and down (8 and 2) will move the orange highlight between the available cheats
