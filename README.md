@@ -50,7 +50,7 @@ Normal: the player moves at the default speed of 200 units
 Faster: the player moves at 1000 units
 Fastest: the player moves at 3000 units
 
-ump:
+Jump:
 Normal: the player jumps to a default height of 420 units
 Higher: the player jumps to a height of 1800 units
 Highest: the player jumps to a height of 5000 units
