@@ -182,7 +182,7 @@ void DirectxFunctions::RenderDirectX()
 				// update the char array with the current setting
 				swprintf(cheatSetting, ourCheats[i][currentCheatSetting[i]]);				
 
-				// concatenate print it to the menu
+				// concatenate and print to the menu
 				wcscat(cheatName, cheatSetting);
 				DirectX.Font->DrawTextW(NULL, cheatName, -1, &pos, 0, color);
 				pos.top += 17;
