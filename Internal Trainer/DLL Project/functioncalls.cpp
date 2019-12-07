@@ -67,7 +67,7 @@ void* pGame = (void*)(gameLogicAddr + 0x9780);
 
 void gameFunc(const char* funcName){
      // create instance of getItemByName function
-	GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
+     GetItemByName = (_GetItemByName)(gameLogicAddr + getItemByNameFuncOff);
 
     // create instance of addItem function
     AddItem = (_AddItem)(gameLogicAddr + addItemFuncOff);
