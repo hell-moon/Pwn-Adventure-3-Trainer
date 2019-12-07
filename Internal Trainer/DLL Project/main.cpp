@@ -179,10 +179,10 @@ void DirectxFunctions::RenderDirectX()
 					color = D3DCOLOR_ARGB(225, 255, 250, 250);
 				swprintf(cheatName, cheatMenuEntries[i]);
 
-				// concatenate the cheat name and the current setting
+				// update the char array with the current setting
 				swprintf(cheatSetting, ourCheats[i][currentCheatSetting[i]]);				
 
-				// print it to the menu
+				// concatenate print it to the menu
 				wcscat(cheatName, cheatSetting);
 				DirectX.Font->DrawTextW(NULL, cheatName, -1, &pos, 0, color);
 				pos.top += 17;
