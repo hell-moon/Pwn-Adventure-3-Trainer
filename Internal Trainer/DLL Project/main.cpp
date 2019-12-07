@@ -64,30 +64,16 @@ int lastCommittedSetting = 0;
 // are there uncommitted changes in the menu?
 int uncommittedChanges = 0;
 
-// strings for the cheats 
-wchar_t manaOptions[2][255] = { L"                      Default",
-								  L"                       Infinite" };
-wchar_t healthOptions[2][255] = { L"                      Default",
-								  L"                   Invincible" };
-wchar_t speedOptions[3][255] = { L"                     Default",
-								  L"                       Faster",
-								  L"                     Fastest" };
-wchar_t jumpOptions[3][255] = { L"                      Default",
-								  L"                       Higher",
-								  L"                     Highest" };
-wchar_t gunOptions[2][255] = { L"                            Off",
-								  L"                 Legendary" };
-//wchar_t teleOptions[8][255] =   { L"                         Town", 
-//								  L"           Tail Mountains", 
-//								  L"                 Pirate Bay", 
-//								  L"                 Gold Farm", 
-//								  L"             Ballmer Peak", 
-//				                  L"    Unbearable Woods", 
-//								  L"                       Sewer", 
-//								  L"                  Lost Cave" };
-wchar_t godOptions[2][255] = { L"                         Off",
-								  L"                         On" };
-
+// create an array of the cheat options
+wchar_t ourCheats[NUMCHEATS][3][255] =
+{
+	{ L"                      Default", L"                       Infinite" },
+	{ L"                      Default", L"                   Invincible", },
+	{ L"                     Default", L"                       Faster", L"                     Fastest" },
+	{ L"                      Default", L"                       Higher", L"                     Highest" },
+	{ L"                            Off", L"                 Legendary" },
+	{ L"                         Off", L"                         On" }
+};
 
 // initialize DirectX settings
 void DirectxFunctions::DirectXInit(HWND hwnd)
@@ -193,22 +179,8 @@ void DirectxFunctions::RenderDirectX()
 					color = D3DCOLOR_ARGB(225, 255, 250, 250);
 				swprintf(cheatName, cheatMenuEntries[i]);
 
-
 				// concatenate the cheat name and the current setting
-				if (i == 0)
-					swprintf(cheatSetting, manaOptions[currentCheatSetting[i]]);
-				else if (i == 1)
-					swprintf(cheatSetting, healthOptions[currentCheatSetting[i]]);
-				else if (i == 2)
-					swprintf(cheatSetting, speedOptions[currentCheatSetting[i]]);
-				else if (i == 3)
-					swprintf(cheatSetting, jumpOptions[currentCheatSetting[i]]);
-				else if (i == 4)
-					swprintf(cheatSetting, gunOptions[currentCheatSetting[i]]);
-				//else if (i == 5)
-				//	swprintf(swf2, teleOptions[currentCheatSetting[i]]);
-				else if (i == 5)
-					swprintf(cheatSetting, godOptions[currentCheatSetting[i]]);
+				swprintf(cheatSetting, ourCheats[i][currentCheatSetting[i]]);				
 
 				// print it to the menu
 				wcscat(cheatName, cheatSetting);
