@@ -1,3 +1,12 @@
+$$\   $$\  $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$\ $$\   $$\  $$$$$$\        $$$$$$$\  $$$$$$$$\  $$$$$$\  $$\    $$\ $$$$$$$$\ $$$$$$$\   $$$$$$\        
+$$ |  $$ |$$  __$$\ $$  __$$\ $$ | $$  |\_$$  _|$$$\  $$ |$$  __$$\       $$  __$$\ $$  _____|$$  __$$\ $$ |   $$ |$$  _____|$$  __$$\ $$  __$$\       
+$$ |  $$ |$$ /  $$ |$$ /  \__|$$ |$$  /   $$ |  $$$$\ $$ |$$ /  \__|      $$ |  $$ |$$ |      $$ /  $$ |$$ |   $$ |$$ |      $$ |  $$ |$$ /  \__|      
+$$$$$$$$ |$$$$$$$$ |$$ |      $$$$$  /    $$ |  $$ $$\$$ |$$ |$$$$\       $$$$$$$\ |$$$$$\    $$$$$$$$ |\$$\  $$  |$$$$$\    $$$$$$$  |\$$$$$$\        
+$$  __$$ |$$  __$$ |$$ |      $$  $$<     $$ |  $$ \$$$$ |$$ |\_$$ |      $$  __$$\ $$  __|   $$  __$$ | \$$\$$  / $$  __|   $$  __$$<  \____$$\       
+$$ |  $$ |$$ |  $$ |$$ |  $$\ $$ |\$$\    $$ |  $$ |\$$$ |$$ |  $$ |      $$ |  $$ |$$ |      $$ |  $$ |  \$$$  /  $$ |      $$ |  $$ |$$\   $$ |      
+$$ |  $$ |$$ |  $$ |\$$$$$$  |$$ | \$$\ $$$$$$\ $$ | \$$ |\$$$$$$  |      $$$$$$$  |$$$$$$$$\ $$ |  $$ |   \$  /   $$$$$$$$\ $$ |  $$ |\$$$$$$  |      
+\__|  \__|\__|  \__| \______/ \__|  \__|\______|\__|  \__| \______/       \_______/ \________|\__|  \__|    \_/    \________|\__|  \__| \______/   
+
 CAPSTONE USAGE INSTRUCTIONS
 
 Game Installation:
@@ -6,8 +15,10 @@ The target of our Trainer (a  utility for implementing game cheats) is Pwn Adven
 our project, the game will need to be installed. It can be downloaded here:
 https://www.pwnadventure.com/
 
-Run the executable which will install the game on your computer. Once installation is 
-complete, select 'Offline Play' from the main menu and create a character. 
+
+
+Run the executable which will start the game on your computer. Once started,
+select 'Offline Play' from the main menu and create a character. 
 
 
 Implementing our project:
@@ -15,17 +26,19 @@ Implementing our project:
 Our program is a Dynamic Linked Library (DLL), which will be injected into the game’s process. 
 Inside the "Internal Trainer / Binaries - Final" folder you will find two files:
 “hackingBeaversInjector.exe” and “Pwn Adventure 3 Internal Trainer.dll”.
-Running the exe will inject our cheat into the game.
+Running the .exe will inject our library into the game.
 
 Note on security:
 
-Our project involves injecting code via an exe. This is likely to be flagged by any 
-anti-virus software running on your computer. Anti-virus software may need to be temporarily
-disabled while using this program, or exclude the injector from anti-virus scans.
+Our project involves injecting executable code (what a virus does) via an exe. 
+This is likely to be flagged by any anti-virus software running on your computer. 
+Anti-virus software may need to be temporarily disabled while using this program, 
+or exclude the injector from anti-virus scans.
 
 Using the Trainer:
 
-Once the exe is run, a menu will appear within the upper left corner of the screen,
+Once the .exe is run, a menu will appear within the upper left corner of the screen.
+(the game window has to be focused for the menu to show)
 The user is able to use the directional arrows on the NUMPAD to navigate the menu:
 - Up and down (8 and 2) will move the orange highlight between the available cheats
 - Left and right (4 and 6) will cycle through the available settings for each cheat
@@ -58,7 +71,7 @@ Off: the player starts with no items and must acquire them through gameplay as t
 Legendary: the player is given several legendary guns, ammunition, and 9999 of the in-game currency
 
 Teleport (patched out of final version due to potential bugs, available in "Binaries - Teleport") 
-the player is transported to one of the following locations
+the player is transported to one of the following locations: 
 Town
 Tail Mountains
 Pirate Bay

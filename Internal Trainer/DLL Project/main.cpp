@@ -138,7 +138,7 @@ void DirectxFunctions::RenderDirectX()
 		}
 
 		// pressing subtract toggles menu visibility 
-		if (bKeys[VK_SUBTRACT])
+		if (bKeys[VK_INSERT])
 		{
 			menuVisible = !menuVisible;
 		}
@@ -189,10 +189,10 @@ void DirectxFunctions::RenderDirectX()
 			}
 			pos.top += 19.5;
 			// footer text
-			DirectX.Font->DrawTextW(NULL, L"Press NUMPAD- to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
+			DirectX.Font->DrawTextW(NULL, L"Press INSERT to hide menu", -1, &pos, 0, D3DCOLOR_ARGB(255, 5, 5, 5));
 
 			// move up
-			if (bKeys[VK_NUMPAD8])
+			if (bKeys[VK_OEM_PLUS])
 			{
 				// overwrite any uncommitted change
 				if (uncommittedChanges == 1)
@@ -207,7 +207,7 @@ void DirectxFunctions::RenderDirectX()
 				}
 			}
 			// move down
-			if (bKeys[VK_NUMPAD2])
+			if (bKeys[VK_OEM_MINUS])
 			{
 				// overwrite any uncommitted change
 				if (uncommittedChanges == 1)
@@ -222,7 +222,7 @@ void DirectxFunctions::RenderDirectX()
 				}
 			}
 			// get previous setting
-			if (bKeys[VK_NUMPAD4])
+			if (bKeys[VK_OEM_4])
 			{
 				// store the last committed setting
 				if (uncommittedChanges == 0)
@@ -236,7 +236,7 @@ void DirectxFunctions::RenderDirectX()
 	
 			}
 			// get next setting
-			if (bKeys[VK_NUMPAD6])
+			if (bKeys[VK_OEM_6])
 			{
 				// store a the last committed setting
 				if (uncommittedChanges == 0)
@@ -250,7 +250,7 @@ void DirectxFunctions::RenderDirectX()
 
 			}
 			// commit selected change
-			if (bKeys[VK_NUMPAD0])
+			if (bKeys[VK_OEM_5])
 			{
 				// commit any changes
 				lastCommittedSetting = currentCheatSetting[highlightedCheat];

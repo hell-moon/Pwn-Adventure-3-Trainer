@@ -1,6 +1,4 @@
-﻿  functioncalls.cpp
-  main.cpp
-  Generating Code...
-C:\Users\James\Documents\GitHub\lastDay\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\Functions.h(4,1): warning C4005:  '_CRT_SECURE_NO_WARNINGS': macro redefinition
-C:\Users\James\Documents\GitHub\lastDay\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\Functions.h(4,1): warning C4005: C:\Users\James\Documents\GitHub\lastDay\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\main.cpp: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
-  Pwn Adventure 3 Internal Trainer.vcxproj -> C:\Users\James\Documents\GitHub\lastDay\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\Debug\Pwn Adventure 3 Internal Trainer.dll
+﻿  main.cpp
+X:\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\Functions.h(4,1): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+X:\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\main.cpp : message : see previous definition of '_CRT_SECURE_NO_WARNINGS'
+  Pwn Adventure 3 Internal Trainer.vcxproj -> X:\Pwn-Adventure-3-Trainer\Internal Trainer\DLL Project\Debug\Pwn Adventure 3 Internal Trainer.dll
